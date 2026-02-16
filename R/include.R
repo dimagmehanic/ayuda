@@ -14,5 +14,5 @@ include <- function(package) {
     install.packages(package, dependencies = TRUE)
   }
 
-  library(package, character.only = TRUE)
+  library(package, character.only = TRUE, quietly = TRUE)
 }
