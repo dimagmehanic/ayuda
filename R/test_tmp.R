@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @examples
-#' test()
-test <- function(x = cars) {
+#' test_tmp()
+test_tmp <- function(x = cars) {
   plot(x)
 }

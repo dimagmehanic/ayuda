@@ -13,7 +13,7 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     DBI,
-    ggalluvial,
+    getPass, 
     ggplot2,
     haven,
     lobstr,
