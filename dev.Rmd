@@ -1,12 +1,22 @@
+### Load require libraries
+```{r, echo=FALSE}
 library(devtools)
 library(magrittr)
+```
+
+### Document, install and load the package
+```{r}
 document()
 install()
 load_all()
+```
 
+### Load required libraries for the package
+```{r}
 libs2use <- c("lobstr", "haven", "stringr",
               "DBI", "odbc", "lubridate", "ggplot2",
               "RMySQL", "getPass")
 
 use_package("tidyverse", type = "depends")
 libs2use %>% purrr::walk(use_package)
+```

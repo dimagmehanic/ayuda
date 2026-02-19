@@ -4,7 +4,7 @@
 \alias{info}
 \title{Print session info to a file}
 \usage{
-info()
+info(file = "info.txt")
 }
 \arguments{
 \item{file}{A character string specifying the name of the file to save
