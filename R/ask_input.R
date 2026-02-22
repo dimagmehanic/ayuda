@@ -13,8 +13,13 @@
 ask_input <- function(var, pprompt, default = NULL) {
   if (is.null(var)) {
     var <- readline(prompt = pprompt)
+    # check if empty user imput
+    if (stringr::str_trim(var) == "") {
+      var <- NULL
+    }
   }
-  if (is.null(var) || trimws(var) == "") {
+
+  if (is.null(var)) {
     default
   }else {
     var
