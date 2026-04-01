@@ -14,7 +14,7 @@ ask_input <- function(var, pprompt, default = NULL) {
 
   # Text input wrapper
   ask_input_gui <- function(message, default="") {
-    if (requireNamespace("rstudioapi", quietly = TRUE)) {
+    if (Sys.getenv("RSTUDIO") == "1") {
       rstudioapi::showPrompt(title = "User Input Prompt 📝", message = message, default = default)
     } else {
       readline(paste0(message, " "))
