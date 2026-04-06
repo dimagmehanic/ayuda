@@ -68,7 +68,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
 
       if (is.null(private$pointer)) stop("No connection established")
 
-      if (all(table_name %in% self.list())) {
+      if (all(table_name %in% self$list())) {
         if (self$datos %in% c("zip", "tar", "dir")) {
           files <- list_dir(private.pointer, full.names = TRUE, recursive = TRUE) # nolint
           # attach extension as class to filepath
@@ -83,7 +83,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
         message(
           sprintf("❌ Table '%s' not found in the database.\nAvailable tables: %s", # nolint
                   table_name,
-                  paste(self.list(), collapse = ", "))
+                  paste(self$list(), collapse = ", "))
         )
       }
 
@@ -153,7 +153,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       # DB vs files
       if (!is.null(private$pointer)) {
         message("🗄️ Database connection active")
-        tables <- self.list()
+        tables <- self$list()
         message("📊 Tables available: ", paste(tables, collapse = ", "))
       }
       message("─────────────────────────────")
