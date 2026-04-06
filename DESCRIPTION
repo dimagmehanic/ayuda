@@ -13,13 +13,15 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     DBI,
-    getPass, 
+    getPass,
     ggplot2,
     haven,
     lobstr,
     lubridate,
     odbc,
+    R6,
     RMySQL,
+    RSQLite,
     stringr
 Depends: 
     tidyverse

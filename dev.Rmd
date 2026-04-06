@@ -1,7 +1,7 @@
 ### Load require libraries
 ```{r, echo=FALSE}
 library(devtools)
-library(magrittr)
+library(magrittr) 
 ```
 
 ### Document, install and load the package
@@ -13,8 +13,8 @@ load_all()
 
 ### Load required libraries for the package
 ```{r}
-libs2use <- c("lobstr", "haven", "stringr",
-              "DBI", "odbc", "lubridate", "ggplot2",
+libs2use <- c("lobstr", "haven","RSQLite",
+              "DBI", "odbc", "R6",
               "RMySQL", "getPass")
 
 use_package("tidyverse", type = "depends")

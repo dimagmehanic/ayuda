@@ -5,12 +5,10 @@
 \title{List all files in a directory with a specific extension and return
 them as a named list.}
 \usage{
-list_dir(location, ext = "xpt")
+list_dir(location, ...)
 }
 \arguments{
 \item{location}{The directory to search for files.}
-
-\item{ext}{The file extension to filter by (default is "xpt").}
 }
 \value{
 A named list of file paths, where the names are derived from
@@ -21,5 +19,5 @@ List all files in a directory with a specific extension and return
 them as a named list.
 }
 \examples{
-list_dir("path/to/data", ext = "xpt")
+list_dir("path/to/data") 
 }

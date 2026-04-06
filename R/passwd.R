@@ -9,7 +9,7 @@
 #' passwd()
 #' passwd(q="PASSWORD: ")
 
-passwd <- function(q = "Enter Database password: ") {
+passwd <- function(q = "🔑 Password: ") {
   if (Sys.getenv("RSTUDIO") == "1") {
     rstudioapi::askForPassword(q)
   }else {

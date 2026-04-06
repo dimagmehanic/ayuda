@@ -4,7 +4,7 @@
 \alias{passwd}
 \title{Ask for user password input}
 \usage{
-passwd(q = "Enter Database password: ")
+passwd(q = "🔑 Password: ")
 }
 \arguments{
 \item{q}{A character string with the prompt message for the password input}
