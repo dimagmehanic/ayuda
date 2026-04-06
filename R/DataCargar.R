@@ -70,7 +70,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
 
       if (all(table_name %in% self$list())) {
         if (self$datos %in% c("zip", "tar", "dir")) {
-          files <- list_dir(private.pointer, full.names = TRUE, recursive = TRUE) # nolint
+          files <- list_dir(private$pointer, full.names = TRUE, recursive = TRUE) # nolint
           # attach extension as class to filepath
           y <- files[table_name]
           # attach file as class to filename
@@ -121,7 +121,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) {
 
         message("🗄️ Detected database source")
-        tables <- DBI::dbListTables(private.pointer)
+        tables <- DBI::dbListTables(private$pointer)
 
         message("📊 Found ", length(tables), " table(s)")
         return(tables) # nolint
@@ -129,7 +129,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       } else if (self$datos %in% c("zip", "tar", "dir")) {
 
         message("📁 Detected file-based source (archive/directory)")
-        files <- list_dir(private.pointer, full.names = TRUE, recursive = TRUE)
+        files <- list_dir(private$pointer, full.names = TRUE, recursive = TRUE)
 
         message("📄 Found ", length(files), " file(s)")
         return(names(files)) # nolint
