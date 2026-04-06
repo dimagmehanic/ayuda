@@ -1,11 +1,12 @@
 ### Load require libraries
 ```{r, echo=FALSE}
 library(devtools)
-library(magrittr) 
+library(magrittr)
 ```
 
 ### Document, install and load the package
 ```{r}
+.libPaths()
 document()
 install()
 load_all()
@@ -13,7 +14,7 @@ load_all()
 
 ### Load required libraries for the package
 ```{r}
-libs2use <- c("lobstr", "haven","RSQLite",
+libs2use <- c("lobstr", "haven", "RSQLite",
               "DBI", "odbc", "R6",
               "RMySQL", "getPass")
 
@@ -32,6 +33,5 @@ renv::status()      # check differences
 renv::install("pkg")# install package
 renv::update()      # update packages
 renv::clean()       # remove unused
-
 ```
 💡 Commit `renv.lock` for reproducibility

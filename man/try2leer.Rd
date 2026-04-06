@@ -2,20 +2,20 @@
 % Please edit documentation in R/try2leer.R
 \name{try2leer}
 \alias{try2leer}
-\title{try2leer - A generic function to read various file formats and database tables}
+\title{try2leer - A generic function to read various file formats and database tables # nolint}
 \usage{
 try2leer(x, ...)
 }
 \arguments{
 \item{x}{the path to the file to read, can be a local file path}
 
-\item{...}{additional arguments passed to the specific read method (e.g., read_csv, read_xpt, etc.)}
+\item{...}{additional arguments passed to the specific read method (e.g., read_csv, read_xpt, etc.) # nolint}
 }
 \value{
 a data frame or tibble containing the contents of the file
 }
 \description{
-try2leer - A generic function to read various file formats and database tables
+try2leer - A generic function to read various file formats and database tables # nolint
 }
 \examples{
 try2leer("data.csv")

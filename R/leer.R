@@ -1,18 +1,13 @@
 #' leer - A generic function to read various file formats and database tables
 #'
 #' @param x the path to the file to read, can be a local file path
-#' @param ... additional arguments passed to the specific read method (e.g., read_csv, read_xpt, etc.)
+#' @param ... additional arguments passed to the specific read method (e.g., read_csv, read_xpt, etc.) # nolint
 #'
 #' @return a data frame or tibble containing the contents of the file
-#' @export 
+#' @export
 #'
-#' @examples 
+#' @examples
 #' leer("data.csv")
-#' leer("data.tsv")
-#' leer("data.csv2")
-#' leer("data.csv.gz")
-#' leer("data.xpt")
-#' leer("test.txt")
 
 #' @export
 leer <- function(x, ...) {
@@ -25,7 +20,7 @@ leer.file <- function(x, ...) {
 
   filename <- tolower(trimws(x))
   ext <- tools::file_ext(filename)
-  
+
   # attach extension as class to filename
   y <- structure(x, class = ext)
 
@@ -72,7 +67,7 @@ leer.csv2 <- function(x, ...) {
     },
     error = function(e) {
       message("↪️ Falling back to default method")
-      leer.default(filename, ...)
+      leer.default(x, ...)
     }
   )
 }
@@ -98,14 +93,14 @@ leer.xpt <- function(x, ...) {
 
 # SQLiteConnection
 #' @export
-leer.SQLiteConnection <- function(con, table, ...) { 
+leer.SQLiteConnection <- function(con, table, ...) {
   tryCatch(
     {
       message("🗄️ SQLite source detected")
       message("🔄 Creating lazy table reference for: ", table)
-      
+
       res <- dplyr::tbl(con, table)
-      
+
       message("✅ Lazy table ready (use dplyr verbs or collect())")
       return(res)
     },
@@ -118,14 +113,14 @@ leer.SQLiteConnection <- function(con, table, ...) {
 
 # MariaDBConnection
 #' @export
-leer.MariaDBConnection <- function(con, table, ...) { 
+leer.MariaDBConnection <- function(con, table, ...) {
   tryCatch(
     {
       message("🗄️ MariaDB source detected")
       message("🔄 Creating lazy table reference for: ", table)
-      
+
       res <- dplyr::tbl(con, table)
-      
+
       message("✅ Lazy table ready (use dplyr verbs or collect())")
       return(res)
     },
@@ -136,9 +131,9 @@ leer.MariaDBConnection <- function(con, table, ...) {
   )
 }
 
-# DBIConnection 
+# DBIConnection
 #' @export
-leer.DBIConnection <- function(con, table, ...) { 
+leer.DBIConnection <- function(con, table, ...) {
   tryCatch(
     {
       message("🗄️ Database connection detected")

@@ -130,7 +130,7 @@ character vector
 }
 
 \subsection{Returns}{
-The DataCargar object itself (invisibly), allowing for method chaining
+The DataCargar object itself (invisibly), allowing for method chaining # nolint
 }
 }
 \if{html}{\out{<hr>}}

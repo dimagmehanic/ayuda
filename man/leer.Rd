@@ -9,7 +9,7 @@ leer(x, ...)
 \arguments{
 \item{x}{the path to the file to read, can be a local file path}
 
-\item{...}{additional arguments passed to the specific read method (e.g., read_csv, read_xpt, etc.)}
+\item{...}{additional arguments passed to the specific read method (e.g., read_csv, read_xpt, etc.) # nolint}
 }
 \value{
 a data frame or tibble containing the contents of the file
@@ -19,9 +19,4 @@ leer - A generic function to read various file formats and database tables
 }
 \examples{
 leer("data.csv")
-leer("data.tsv")
-leer("data.csv2")
-leer("data.csv.gz")
-leer("data.xpt")
-leer("test.txt")
 }
