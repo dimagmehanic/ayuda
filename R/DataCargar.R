@@ -33,26 +33,26 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       }
 
       if (is.null(args$db)) {
-        self$guess_ext(x)
+        args$db <- self$guess_ext(x)
       }
 
-      if (db %in% c("sqlite", "db", "sqlite3", "db3")) {
-        self$datos <- db
+      if (args$db %in% c("sqlite", "db", "sqlite3", "db3")) {
+        self$datos <- args$db
         private$pointer <- private$connect_sqlite(x, ...)
-      } else if (db == "sql") {
-        self$datos <- db
+      } else if (args$db == "sql") {
+        self$datos <- args$db
         private$pointer <- private$connect_sql(x, ...)
-      } else if (db == "dir") {
-        self$datos <- db
+      } else if (args$db == "dir") {
+        self$datos <- dargs$db
         private$pointer <- private$connect_dir(x, ...)
-      } else if (db == "zip") {
-        self$datos <- db
+      } else if (args$db == "zip") {
+        self$datos <- args$db
         private$pointer <- private$connect_zip(x, ...)
-      } else if (db == "tar") {
-        self$datos <- db
+      } else if (args$db == "tar") {
+        self$datos <- args$db
         private$pointer <- private$connect_tar(x, ...)
-      } else if (db == "mysql") {
-        self$datos <- db
+      } else if (args$db == "mysql") {
+        self$datos <- args$db
         private$pointer <- private$connect_mysql(dbname = x, ...)
       } else {
         stop("❌ Unsupported database.")
@@ -72,7 +72,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
         if (self$datos %in% c("zip", "tar", "dir")) {
           files <- list_dir(private$pointer, full.names = TRUE, recursive = TRUE) # nolint
           # attach extension as class to filepath
-          y <- files[table_name]
+          y <- unlist(files[table_name])
           # attach file as class to filename
           y <- structure(y, class = "file")
           leer(y, ...)

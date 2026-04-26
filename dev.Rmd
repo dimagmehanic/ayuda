@@ -35,3 +35,17 @@ renv::update()      # update packages
 renv::clean()       # remove unused
 ```
 💡 Commit `renv.lock` for reproducibility
+
+
+```{r}
+zip <- try2leer("~/data/OrangeBook/EOBZIP_2026_02.zip")
+zip$list()
+zip$leer("patent", delim = "~")  %>% head()
+
+con <- DBI::dbConnect(RSQLite::SQLite(), "~/data/OrangeBook/OrangeBook.db")
+
+message("💾 Saving data to SQLite: ", table)
+
+dbWriteTable(con, table, df, overwrite = TRUE)
+message("✅ Saved successfully")
+```
