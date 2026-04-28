@@ -27,7 +27,8 @@ Load data from files, directories, archives, or databases.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-DataCargar-new}{\code{DataCargar$new()}}
-\item \href{#method-DataCargar-leer}{\code{DataCargar$leer()}}
+\item \href{#method-DataCargar-read}{\code{DataCargar$read()}}
+\item \href{#method-DataCargar-write}{\code{DataCargar$write()}}
 \item \href{#method-DataCargar-guess_ext}{\code{DataCargar$guess_ext()}}
 \item \href{#method-DataCargar-disconnect}{\code{DataCargar$disconnect()}}
 \item \href{#method-DataCargar-list}{\code{DataCargar$list()}}
@@ -57,12 +58,12 @@ Initialize a new DataCargar object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-DataCargar-leer"></a>}}
-\if{latex}{\out{\hypertarget{method-DataCargar-leer}{}}}
-\subsection{Method \code{leer()}}{
+\if{html}{\out{<a id="method-DataCargar-read"></a>}}
+\if{latex}{\out{\hypertarget{method-DataCargar-read}{}}}
+\subsection{Method \code{read()}}{
 Read data
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataCargar$leer(table_name, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DataCargar$read(table_name, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -76,6 +77,27 @@ Read data
 }
 \subsection{Returns}{
 tibble/data.frame/lazy table
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DataCargar-write"></a>}}
+\if{latex}{\out{\hypertarget{method-DataCargar-write}{}}}
+\subsection{Method \code{write()}}{
+Write data
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DataCargar$write(df, table_name, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{df}}{dataframe or tibble}
+
+\item{\code{table_name}}{name}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

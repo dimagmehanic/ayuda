@@ -32,17 +32,17 @@ try2leer.character <- function(x, ...) {
   mysql  <- FALSE
 
   # If directory does not exist treat it as possible mysql database
-  if (is.na(isdir)) {
+  if (is.na(isdir) && !ext_bool) {
     isdir  <- TRUE
     mysql <- TRUE
+  } else if (is.na(isdir)){
+    isdir  <- FALSE
   }
 
   if (!isdir && ext_bool && !(ext %in% ext_dbs)) {
     # attach file as class to filename
     y <- structure(x, class = "file")
     leer(y, ...)
-  } else if (isdir && ext_bool) {
-    stop("❌ File does not exist: ", x)
   } else if (isdir && !ext_bool) {
 
     # Friendly message about  object
@@ -64,5 +64,7 @@ try2leer.character <- function(x, ...) {
             "  obj$list()   # list data\n",
             "  obj$info()   # show info")
     invisible(DataCargar$new(x, db = ext)) # call DataLoader R6 class
+  } else if (isdir && ext_bool) {
+    stop("❌ File does not exist: ", x)
   }
 }

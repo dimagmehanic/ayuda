@@ -36,16 +36,20 @@ renv::clean()       # remove unused
 ```
 💡 Commit `renv.lock` for reproducibility
 
-
+##### Test
 ```{r}
+library(ayuda)
+db <- try2leer("~/data/db/OrangeBook.db")
+db$list()
+db$read("products")
+
 zip <- try2leer("~/data/OrangeBook/EOBZIP_2026_02.zip")
 zip$list()
-zip$leer("patent", delim = "~")  %>% head()
 
-con <- DBI::dbConnect(RSQLite::SQLite(), "~/data/OrangeBook/OrangeBook.db")
+walk(zip$list(), function(x) {
+                              zip$read(x, delim = "~") %>% 
+                                db$write(x, overwrite = TRUE)})
 
-message("💾 Saving data to SQLite: ", table)
-
-dbWriteTable(con, table, df, overwrite = TRUE)
-message("✅ Saved successfully")
+db$disconnect()
+zip$disconnect()
 ```

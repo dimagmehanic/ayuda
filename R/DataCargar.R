@@ -28,12 +28,16 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
 
       args  <- list(...)
 
-      if (is.na(file.info(x)$isdir)) {
-        stop("❌ Path does not exist: ", x)
-      }
-
       if (is.null(args$db)) {
         args$db <- self$guess_ext(x)
+      }
+
+      if (is.na(file.info(x)$isdir) &&
+            !(args$db %in% c("sqlite", "db", "sqlite3", "db3"))) {
+        stop("❌ Path does not exist: ", x)
+      } else if (is.na(file.info(x)$isdir) &&
+                   (args$db %in% c("sqlite", "db", "sqlite3", "db3"))) {
+        message("⚠️ Specified database path does not exist: ", x, ". Initializing a new database.") # nolint
       }
 
       if (args$db %in% c("sqlite", "db", "sqlite3", "db3")) {
@@ -64,7 +68,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
     #' @param table_name for databases or filename
     #' @param ... Additional arguments passed to read functions
     #' @return tibble/data.frame/lazy table
-    leer = function(table_name, ...) {
+    read = function(table_name, ...) {
 
       if (is.null(private$pointer)) stop("No connection established")
 
@@ -85,6 +89,24 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
                   table_name,
                   paste(self$list(), collapse = ", "))
         )
+      }
+
+    },
+
+    # Method to write a table(s)
+    #' @description Write data
+    #' @param table_name name
+    #' @param df dataframe or tibble 
+    #' @param ... Additional arguments passed to read functions
+    write = function(df, table_name, ...) {
+
+      if (is.null(private$pointer)) stop("No connection established")
+
+      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) { # nolint
+        DBI::dbWriteTable(private$pointer, name = table_name, value = df, ...)
+      }else {
+        message(sprintf("❌ Failed to write table '%s': the current database type does not support this operation.", # nolint
+                        table_name))
       }
 
     },
