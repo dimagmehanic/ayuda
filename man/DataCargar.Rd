@@ -50,7 +50,7 @@ Initialize a new DataCargar object
 \describe{
 \item{\code{x}}{Path to file, directory, archive, or a DBIConnection object}
 
-\item{\code{db}}{type of database}
+\item{\code{db}}{database}
 
 \item{\code{...}}{Additional arguments passed to internal methods}
 }

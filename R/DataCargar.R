@@ -21,12 +21,12 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
     datos = NULL,
     # Initialize db type: "mysql", "sqlite", "zip", "tar", "db" etc or path to folder # nolint
     #' @description Initialize a new DataCargar object
-    #' @param x Path to file, directory, archive, or a DBIConnection object
-    #' @param db type of database
+    #' @param x Path to file, directory, archive, or a DBIConnection object 
+    #' @param db database
     #' @param ... Additional arguments passed to internal methods
     initialize = function(x, db = NULL, ...) {
 
-      args  <- list(...)
+      args  <- list(db = db, ...)
 
       if (is.null(args$db)) {
         args$db <- self$guess_ext(x)
@@ -47,7 +47,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
         self$datos <- args$db
         private$pointer <- private$connect_sql(x, ...)
       } else if (args$db == "dir") {
-        self$datos <- dargs$db
+        self$datos <- args$db
         private$pointer <- private$connect_dir(x, ...)
       } else if (args$db == "zip") {
         self$datos <- args$db

@@ -51,7 +51,7 @@ try2leer.character <- function(x, ...) {
             "  obj$list()   # list data\n",
             "  obj$info()   # show info")
 
-    if (!(mysql)) {
+    if (!(mysql)) { 
       invisible(DataCargar$new(x, db = "dir"))  # call DataLoader R6 class
     } else {
       invisible(DataCargar$new(x, db = "mysql"))  # call DataLoader R6 class

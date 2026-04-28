@@ -7,11 +7,11 @@
 #' the file names without extensions.
 #' @export
 #'
-#' @examples list_dir("path/to/data") 
+#' @examples list_dir("path/to/data")
 
 list_dir <- function(location, ...) {
   files <- list.files(path = location, ...) %>% as.list()
-  
+
   names(files) <- files %>% stringr::str_split("/") %>% 
     purrr::map(dplyr::last) %>% 
     str_split("[.]") %>% purrr::map(dplyr::first) %>% unlist()

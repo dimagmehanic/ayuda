@@ -19,5 +19,5 @@ List all files in a directory with a specific extension and return
 them as a named list.
 }
 \examples{
-list_dir("path/to/data") 
+list_dir("path/to/data")
 }
