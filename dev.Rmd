@@ -39,11 +39,14 @@ renv::clean()       # remove unused
 ##### Test
 ```{r}
 library(ayuda)
-db <- try2leer("~/data/db/OrangeBook.db")
-db$list()
-db$read("products")
+db2 <- try2leer("~/data/db/OrangeBook.db")
+
+db2$list()
+
+db2$read("products")
 
 zip <- try2leer("~/data/OrangeBook/EOBZIP_2026_02.zip")
+
 zip$list()
 
 walk(zip$list(), function(x) {
@@ -52,4 +55,10 @@ walk(zip$list(), function(x) {
 
 db$disconnect()
 zip$disconnect()
+
+sdtm <- try2leer("~/data/pilot01/sdtm")
+sdtm$list()
+
+
+
 ```
