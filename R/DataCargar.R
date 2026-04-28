@@ -136,8 +136,9 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
     },
 
     #' @description List tables or files
+    #' @param ... Additional arguments passed to read functions
     #' @return character vector
-    list = function() {
+    list = function(...) {
       message("🔍 Listing available tables...")
 
       if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) {
@@ -151,7 +152,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       } else if (self$datos %in% c("zip", "tar", "dir")) {
 
         message("📁 Detected file-based source (archive/directory)")
-        files <- list_dir(private$pointer, full.names = TRUE, recursive = TRUE)
+        files <- list_dir(private$pointer, full.names = TRUE, recursive = TRUE, ...) # nolint
 
         message("📄 Found ", length(files), " file(s)")
         return(names(files)) # nolint
