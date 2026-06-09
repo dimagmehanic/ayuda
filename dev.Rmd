@@ -58,7 +58,4 @@ zip$disconnect()
 
 sdtm <- try2leer("~/data/pilot01/sdtm")
 sdtm$list()
-
-
-
 ```
