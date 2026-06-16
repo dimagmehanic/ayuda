@@ -14,6 +14,35 @@ leer <- function(x, ...) {
   UseMethod("leer")
 }
 
+# character
+#' @export
+leer.character <- function(x, ...) {
+
+    # Auto-detect path type and read data
+    ext <- tools::file_ext(tolower(trimws(x)))
+    ext_bool <- nzchar(ext)
+    ext_dbs <- c("sqlite", "zip", "tar", "db", "sqlite3", "db3", "sql")
+    isdir <- file.info(x)$isdir
+
+    if (!isdir && ext_bool && !(ext %in% ext_dbs)) {
+        # attach file as class to filename
+        y <- structure(x, class = "file")
+        leer(y, ...)
+    } else if (isdir && !ext_bool) {
+
+        # Friendly message about  object
+        message("✅ R6 object of class 'DataLoader' returned.\n",
+                "You can use its methods to interact with the data, for example:\n",
+                "  obj$list()   # list data\n",
+                "  obj$info()   # show info")
+
+        invisible(DataCargar$new(x, db = "dir"))  # call DataLoader R6 class
+
+    } else if (isdir && ext_bool) {
+        stop("❌ File does not exist: ", x)
+    }
+}
+
 # file
 #' @export
 leer.file <- function(x, ...) {
@@ -55,6 +84,36 @@ leer.tsv <- function(filename, ...) {
       leer.default(filename, ...)
     }
   )
+}
+
+# rds
+#' @export
+leer.rds <- function(filename, ...) {
+    tryCatch(
+        {
+            message("📄 Reading Rds file ...")
+            readRDS(filename, ...)
+        },
+        error = function(e) {
+            message("↪️ Falling back to default method")
+            leer.default(filename, ...)
+        }
+    )
+}
+
+# rda
+#' @export
+leer.rds <- function(filename, ...) {
+    tryCatch(
+        {
+            message("📄 Reading rda file ...")
+            load(filename, ...)
+        },
+        error = function(e) {
+            message("↪️ Falling back to default method")
+            leer.default(filename, ...)
+        }
+    )
 }
 
 # csv2
