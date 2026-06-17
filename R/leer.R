@@ -28,7 +28,17 @@ leer.character <- function(x, ...) {
         # attach file as class to filename
         y <- structure(x, class = "file")
         leer(y, ...)
-    } else if (isdir && !ext_bool) {
+    } else if (!isdir && ext_bool && ext %in% ext_dbs) {
+
+        # Friendly message about  object
+        message("✅ R6 object of class 'DataLoader' returned.\n",
+                "You can use its methods to interact with the data, for example:\n",
+                "  obj$list()   # list data\n",
+                "  obj$info()   # show info")
+
+        invisible(DataCargar$new(x, db = ext))  # call DataLoader R6 class
+
+    } else if (isdir) {
 
         # Friendly message about  object
         message("✅ R6 object of class 'DataLoader' returned.\n",
@@ -103,17 +113,46 @@ leer.rds <- function(filename, ...) {
 
 # rda
 #' @export
-leer.rds <- function(filename, ...) {
-    tryCatch(
-        {
-            message("📄 Reading rda file ...")
-            load(filename, ...)
-        },
-        error = function(e) {
-            message("↪️ Falling back to default method")
-            leer.default(filename, ...)
-        }
-    )
+leer.rda <- function(filename, ...) {
+  ##lazy load rda files
+  rda_load <- function(f){
+    names <- load(f, ...)
+    if (length(names) > 1) {
+      message(
+        "📦 RDA datasets have been lazy loaded.\n",
+        "✅ No data has been loaded into memory yet.\n\n",
+        "📖 To access an RDA file:\n",
+        '   result <- leer("test.rda")\n\n',
+        "🗂️ To access an object inside the RDA:\n",
+        '   result[["test"]]()\n\n',
+        "🔍 Available objects can be listed with:\n",
+        "   names(result)"
+      )
+      df <- purrr::set_names(
+        purrr::map(names, function(nm) {
+          function() {
+            # load the data
+            load(f, ...)
+            get(nm)
+          }
+        }),
+        names)
+    }else{
+      df <- get(names[1])
+    }
+    return (df)
+  }
+
+  tryCatch(
+  {
+    message("📄 Reading rda file ...")
+    rda_load(filename, ...)
+  },
+  error = function(e) {
+    message("↪️ Falling back to default method")
+    leer.default(filename, ...)
+  }
+  )
 }
 
 # csv2

@@ -51,7 +51,21 @@ dbWriteTable(con, "mtcars", mtcars)
 dbDisconnect(con)
 
 saveRDS(mtcars, "tests/testthat/fixtures/test.rds")
-save(mtcars, file = "tests/testthat/fixtures/test.rda")
+
+test1 <- mtcars
+test2 <- mtcars
+save(test1, test2, file = "tests/testthat/fixtures/test.rda")
+
+system("zip tests/testthat/fixtures/test.zip tests/testthat/fixtures/test.rds")
+system("tar -cvf tests/testthat/fixtures/test.tar tests/testthat/fixtures/test.rds")
+
+db_path <- "tests/testthat/fixtures/test.tar"
+result <- leer(db_path)
+result$leer("test")
+
+
+class(pharmaverseadam)
 
 ```
+
 

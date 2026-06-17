@@ -3,8 +3,8 @@ test_that("db fixture exists", {
     expect_true(file.exists(db_path))
 })
 
-test_that("db fixture works", {
+test_that("db fixture to read data works", {
     db_path <- testthat::test_path("fixtures", "test.db")
-    result <- try2leer(db_path)
-    expect_equal( result$read("mtcars") |> dplyr::collect() |> nrow(), 32)
+    result <- leer(db_path)
+    expect_equal( result$leer("mtcars") |> dplyr::collect() |> nrow(), 32)
 })
