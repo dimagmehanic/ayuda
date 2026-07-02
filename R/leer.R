@@ -34,22 +34,22 @@ leer.character <- function(x, ...) {
     } else if (!isdir && ext_bool && ext %in% ext_dbs) {
 
         # Friendly message about  object
-        message("✅ R6 object of class 'DataLoader' returned.\n",
+        message("✅ R6 object of class 'GetData' returned.\n",
                 "You can use its methods to interact with the data, for example:\n",
                 "  obj$list()   # list data\n",
                 "  obj$info()   # show info")
 
-        invisible(DataCargar$new(x, db = ext))  # call DataLoader R6 class
+        invisible(GetData$new(x, db = ext))  # call GetData R6 class
 
     } else if (isdir) {
 
         # Friendly message about  object
-        message("✅ R6 object of class 'DataLoader' returned.\n",
+        message("✅ R6 object of class 'GetData' returned.\n",
                 "You can use its methods to interact with the data, for example:\n",
                 "  obj$list()   # list data\n",
                 "  obj$info()   # show info")
 
-        invisible(DataCargar$new(x, db = "dir"))  # call DataLoader R6 class
+        invisible(GetData$new(x, db = "dir"))  # call GetData R6 class
 
     } else if (is_package(x)) {
         # attach package as class to filename
@@ -66,13 +66,13 @@ leer.character <- function(x, ...) {
 
                 message(
                     "✅ Connected to database '", dbname, "'.\n",
-                    "📦 Returning a 'DataCargar' R6 object.\n",
+                    "📦 Returning a 'GetData' R6 object.\n",
                     "Use the object's methods to work with the database, for example:\n",
                     "  • obj$list() # list data\n",
                     "  • obj$info() # show info"
                 )
 
-                invisible(DataCargar$new(x, db = dbname))
+                invisible(GetData$new(x, db = dbname))
 
             },
             error = function(e) {

@@ -25,7 +25,6 @@ use_package("tidyverse", type = "depends")
 libs2use %>% purrr::walk(use_package)
 ```
 
-
 ##### 📦 renv Quick Commands
 
 ```{r}
@@ -59,7 +58,12 @@ save(test1, test2, file = "tests/testthat/fixtures/test.rda")
 haven::write_xpt( mtcars, path = "tests/testthat/fixtures/test.xpt")
 system("zip tests/testthat/fixtures/test.zip tests/testthat/fixtures/test.rds")
 system("tar -cvf tests/testthat/fixtures/test.tar tests/testthat/fixtures/test.rds")
- 
+
+```
+
+#### Stats
+```{r}
+get_obs(c(1, 2, 3, NA))
 ```
 
 

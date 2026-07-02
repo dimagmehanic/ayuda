@@ -6,21 +6,21 @@
 #'
 #' @examples
 #' # SQL example
-#' # db <- DataCargar$new("data.db", db = "sqlite")
+#' # db <- GetData$new("data.db", db = "sqlite")
 #' # db$leer("my_table")
 #' # db$disconnect()
 #' # zip example
-#' # db <- DataCargar$new("data.zip", db = "zip")
+#' # db <- GetData$new("data.zip", db = "zip")
 #' # db$leer("file_in_zip.csv")
 #' # db$disconnect()
 
 # Define R6 class
 #' @export
-DataCargar <- R6::R6Class("DataCargar", # nolint
+GetData <- R6::R6Class("GetData", # nolint
   public = list(
     datos = NULL,
     # Initialize db type: "mysql", "sqlite", "zip", "tar", "db" etc or path to folder # nolint
-    #' @description Initialize a new DataCargar object
+    #' @description Initialize a new GetData object
     #' @param x Path to file, directory, archive, or a DBIConnection object
     #' @param db database
     #' @param ... Additional arguments passed to internal methods
@@ -164,10 +164,10 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       }
     },
 
-    #' @return The DataCargar object itself (invisibly), allowing for method chaining # nolint
+    #' @return The GetData object itself (invisibly), allowing for method chaining # nolint
     #' @export
     info = function() {
-      message("ℹ️ DataCargar object info")
+      message("ℹ️ GetData object info")
       message("─────────────────────────────")
 
       # Source type
