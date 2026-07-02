@@ -16,8 +16,8 @@ test()
 ### Load required libraries for the package
 ```{r}
 libs2use <- c(
-  "lobstr", "haven", "RSQLite",
-  "DBI", "odbc", "R6",
+  "lobstr", "haven", "RSQLite", "RPostgres",
+  "DBI", "odbc", "R6", "RMariaDB",
   "RMySQL", "getPass"
 )
 
@@ -59,20 +59,7 @@ save(test1, test2, file = "tests/testthat/fixtures/test.rda")
 haven::write_xpt( mtcars, path = "tests/testthat/fixtures/test.xpt")
 system("zip tests/testthat/fixtures/test.zip tests/testthat/fixtures/test.rds")
 system("tar -cvf tests/testthat/fixtures/test.tar tests/testthat/fixtures/test.rds")
-
-
-
-
-db_path <- "tests/testthat/fixtures"
-result <- leer(db_path)
-result$leer("test")
-result$list() %>% length() == 8
-result$info()
-class(pharmaverseadam)
-
-dt <- leer("datasets") 
-
-dt$mtcars()
+ 
 ```
 
 
