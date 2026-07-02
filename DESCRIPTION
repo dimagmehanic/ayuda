@@ -20,7 +20,9 @@ Imports:
     lubridate,
     odbc,
     R6,
+    RMariaDB,
     RMySQL,
+    RPostgres,
     RSQLite,
     stringr
 Depends: 

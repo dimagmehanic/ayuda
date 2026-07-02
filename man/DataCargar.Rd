@@ -27,7 +27,7 @@ Load data from files, directories, archives, or databases.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-DataCargar-new}{\code{DataCargar$new()}}
-\item \href{#method-DataCargar-read}{\code{DataCargar$read()}}
+\item \href{#method-DataCargar-leer}{\code{DataCargar$leer()}}
 \item \href{#method-DataCargar-write}{\code{DataCargar$write()}}
 \item \href{#method-DataCargar-guess_ext}{\code{DataCargar$guess_ext()}}
 \item \href{#method-DataCargar-disconnect}{\code{DataCargar$disconnect()}}
@@ -58,12 +58,12 @@ Initialize a new DataCargar object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-DataCargar-read"></a>}}
-\if{latex}{\out{\hypertarget{method-DataCargar-read}{}}}
-\subsection{Method \code{read()}}{
+\if{html}{\out{<a id="method-DataCargar-leer"></a>}}
+\if{latex}{\out{\hypertarget{method-DataCargar-leer}{}}}
+\subsection{Method \code{leer()}}{
 Read data
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataCargar$read(table_name, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DataCargar$leer(table_name, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

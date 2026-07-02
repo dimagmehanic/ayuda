@@ -21,7 +21,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
     datos = NULL,
     # Initialize db type: "mysql", "sqlite", "zip", "tar", "db" etc or path to folder # nolint
     #' @description Initialize a new DataCargar object
-    #' @param x Path to file, directory, archive, or a DBIConnection object 
+    #' @param x Path to file, directory, archive, or a DBIConnection object
     #' @param db database
     #' @param ... Additional arguments passed to internal methods
     initialize = function(x, db = NULL, ...) {
@@ -68,7 +68,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
     #' @param table_name for databases or filename
     #' @param ... Additional arguments passed to read functions
     #' @return tibble/data.frame/lazy table
-    read = function(table_name, ...) {
+    leer = function(table_name, ...) {
 
       if (is.null(private$pointer)) stop("No connection established")
 
@@ -96,7 +96,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
     # Method to write a table(s)
     #' @description Write data
     #' @param table_name name
-    #' @param df dataframe or tibble 
+    #' @param df dataframe or tibble
     #' @param ... Additional arguments passed to read functions
     write = function(df, table_name, ...) {
 
@@ -193,8 +193,8 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       args <- list(...)
 
       args$dbname <- ask_input(args$dbname,
-                               "🗄️ Database name (default: mysql): ",
-                               "mysql")
+                               "🗄️ Database name (default: test): ",
+                               "test")
       args$host <- ask_input(args$host,
                              "🌐 Host (e.g., localhost): ",
                              "127.0.0.1")
@@ -217,6 +217,39 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
           message("❌ Connection failed: ", e$message)
         }
       )
+    },
+
+
+    # Postgres connection
+    connect_postgres = function(...) {
+
+        args <- list(...)
+
+        args$dbname <- ask_input(args$dbname,
+                                 "🗄️ Database name (default: test): ",
+                                 "test")
+        args$host <- ask_input(args$host,
+                               "🌐 Host (e.g., localhost): ",
+                               "127.0.0.1")
+        args$port <- ask_input(args$port,
+                               "🔌 Port (e.g., 5432): ",
+                               "5432")
+        args$user <- ask_input(args$user,
+                               paste0("👤 User (default: ", whoami(), "): "),
+                               whoami())
+
+        ### Connection Check
+        tryCatch(
+            {
+                message("🔄 Attempting PostgreSQL database connection...")
+                con <- do.call(DBI::dbConnect, c(list(RPostgres::Postgres()), args, list(password = passwd()))) # nolint
+                message("✅ Connection successful")
+                return(con)
+            },
+            error = function(e) {
+                message("❌ Connection failed: ", e$message)
+            }
+        )
     },
 
     # SQLite connection
@@ -242,11 +275,21 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
         {
           message("🔄 Attempting SQLite database connection...")
           con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:", ...)
-          sql_script <- readLines(db_file)
-          sql_script <- paste(sql_script, collapse = "\n")
 
           # Execute the dump (creates tables and inserts data)
-          DBI::dbExecute(con, sql_script)
+          sql <- paste(readLines(db_file, warn = FALSE), collapse = "\n")
+
+          statements <- strsplit(sql, ";", fixed = TRUE)[[1]]
+
+          for (stmt in statements) {
+
+              stmt <- trimws(stmt)
+
+              if (nzchar(stmt)) {
+                  DBI::dbExecute(con, stmt)
+              }
+          }
+
           message("✅ Connection successful")
           return(con)
         },
