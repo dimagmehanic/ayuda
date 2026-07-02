@@ -193,8 +193,8 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       args <- list(...)
 
       args$dbname <- ask_input(args$dbname,
-                               "🗄️ Database name (default: mysql): ",
-                               "mysql")
+                               "🗄️ Database name (default: test): ",
+                               "test")
       args$host <- ask_input(args$host,
                              "🌐 Host (e.g., localhost): ",
                              "127.0.0.1")
@@ -217,6 +217,39 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
           message("❌ Connection failed: ", e$message)
         }
       )
+    },
+
+
+    # Postgres connection
+    connect_postgres = function(...) {
+
+        args <- list(...)
+
+        args$dbname <- ask_input(args$dbname,
+                                 "🗄️ Database name (default: test): ",
+                                 "test")
+        args$host <- ask_input(args$host,
+                               "🌐 Host (e.g., localhost): ",
+                               "127.0.0.1")
+        args$port <- ask_input(args$port,
+                               "🔌 Port (e.g., 5432): ",
+                               "5432")
+        args$user <- ask_input(args$user,
+                               paste0("👤 User (default: ", whoami(), "): "),
+                               whoami())
+
+        ### Connection Check
+        tryCatch(
+            {
+                message("🔄 Attempting PostgreSQL database connection...")
+                con <- do.call(DBI::dbConnect, c(list(RPostgres::Postgres()), args, list(password = passwd()))) # nolint
+                message("✅ Connection successful")
+                return(con)
+            },
+            error = function(e) {
+                message("❌ Connection failed: ", e$message)
+            }
+        )
     },
 
     # SQLite connection

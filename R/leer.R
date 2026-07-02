@@ -23,6 +23,9 @@ leer.character <- function(x, ...) {
     ext_bool <- nzchar(ext)
     ext_dbs <- c("sqlite", "zip", "tar", "db", "sqlite3", "db3", "sql")
     isdir <- file.info(x)$isdir
+    # if NA the set FALSE
+    isdir <- ifelse(is.na(isdir), FALSE, isdir)
+
 
     if (!isdir && ext_bool && !(ext %in% ext_dbs)) {
         # attach file as class to filename
@@ -48,8 +51,38 @@ leer.character <- function(x, ...) {
 
         invisible(DataCargar$new(x, db = "dir"))  # call DataLoader R6 class
 
-    } else if (isdir && ext_bool) {
-        stop("❌ File does not exist: ", x)
+    } else if (is_package(x)) {
+        # attach package as class to filename
+        y <- structure(x, class = "package")
+        leer(y, ...)
+    } else {
+        tryCatch(
+            {
+                dbname <- ask_input(
+                    args$dbname,
+                    "🗄️  Database name (default: postgres): ",
+                    "postgres"
+                )
+
+                message(
+                    "✅ Connected to database '", dbname, "'.\n",
+                    "📦 Returning a 'DataCargar' R6 object.\n",
+                    "Use the object's methods to work with the database, for example:\n",
+                    "  • obj$list() # list data\n",
+                    "  • obj$info() # show info"
+                )
+
+                invisible(DataCargar$new(x, db = dbname))
+
+            },
+            error = function(e) {
+                message(
+                    "❌ Failed to connect to database '", dbname, "'.\n",
+                    "Reason: ", conditionMessage(e)
+                )
+                invisible(NULL)
+            }
+        )
     }
 }
 
@@ -155,6 +188,50 @@ leer.rda <- function(filename, ...) {
   )
 }
 
+
+# package
+#' @export
+leer.package <- function(filename, ...) {
+    ##lazy load package datasets
+    package_load <- function(f){
+        names <- data(package = f)$results[, "Item"]
+
+        if (length(names) >= 1) {
+            message(
+                "📦 Lazy-loaded ", length(names), " dataset",
+                if (length(names) != 1) "s" else "",
+                " from package '", f, "'.\n",
+                "Examples: ", paste(head(names, 3), collapse = ", "),
+                if (length(names) > 3) ", ..." else "", "\n",
+                "Load a dataset with:\n",
+                "  data <- result[['dataset_name']]()"
+            )
+            df <- purrr::set_names(
+                purrr::map(names, function(nm) {
+                    function() {
+                        # load the data
+                        data(list = nm, package = f)
+                        get(nm)
+                    }
+                }),
+                names)
+        }else{
+            df <- NULL
+        }
+        return (df)
+    }
+
+    tryCatch(
+        {
+            message("📄 Reading package ", filename, " ...")
+            package_load(filename, ...)
+        },
+        error = function(e) {
+            message("↪️ Falling back to default method")
+            leer.default(filename, ...)
+        }
+    )
+}
 # csv2
 #' @export
 leer.csv2 <- function(x, ...) {
