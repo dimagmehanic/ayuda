@@ -64,6 +64,9 @@ system("tar -cvf tests/testthat/fixtures/test.tar tests/testthat/fixtures/test.r
 #### Stats
 ```{r}
 get_obs(c(1, 2, 3, NA))
+
+test <- GetStat$new(mtcars)
+test$obs()
 ```
 
 

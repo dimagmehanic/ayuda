@@ -58,9 +58,13 @@ GetData <- R6::R6Class("GetData", # nolint
       } else if (args$db == "mysql") {
         self$datos <- args$db
         private$pointer <- private$connect_mysql(dbname = x, ...)
+      } else if (args$db == "postgres") {
+          self$datos <- args$db
+          private$pointer <- private$connect_postgres(dbname = x, ...)
       } else {
         stop("❌ Unsupported database.")
       }
+
     },
 
     # Method to read a table(s)
@@ -80,7 +84,7 @@ GetData <- R6::R6Class("GetData", # nolint
           # attach file as class to filename
           y <- structure(y, class = "file")
           leer(y, ...)
-        }else if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) { # nolint
+        }else if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres")) { # nolint
           leer(private$pointer, table_name, ...)
         }
       }else {
@@ -102,7 +106,7 @@ GetData <- R6::R6Class("GetData", # nolint
 
       if (is.null(private$pointer)) stop("No connection established")
 
-      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) { # nolint
+      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres")) { # nolint
         DBI::dbWriteTable(private$pointer, name = table_name, value = df, ...)
       }else {
         message(sprintf("❌ Failed to write table '%s': the current database type does not support this operation.", # nolint
@@ -124,7 +128,7 @@ GetData <- R6::R6Class("GetData", # nolint
     disconnect = function() {
 
       if (!is.null(private$pointer)) {
-        if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) { # nolint
+        if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres")) { # nolint
           DBI::dbDisconnect(private$pointer)
         } else if (self$datos %in% c("dir")) {
           private$pointer <- NULL
@@ -141,7 +145,7 @@ GetData <- R6::R6Class("GetData", # nolint
     list = function(...) {
       message("🔍 Listing available tables...")
 
-      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) {
+      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres")) {
 
         message("🗄️ Detected database source")
         tables <- DBI::dbListTables(private$pointer)

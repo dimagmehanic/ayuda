@@ -20,15 +20,10 @@ get_obs <- function(x) {
     n <- length(x)
     miss <- sum(is.na(x))
     nonmiss <- sum(!is.na(x))
+    pct <- function(v) if (n == 0) 0 else round(v / n * 100, 2)
 
     data.frame(
         Metric = c("Total", "Missing", "Non-missing", "Missing (%)", "Non-missing (%)"),
-        Value = c(
-            n,
-            miss,
-            nonmiss,
-            round(miss / n * 100, 2),
-            round(nonmiss / n * 100, 2)
-        )
+        Value = c(n, miss, nonmiss, pct(miss), pct(nonmiss))
     )
 }

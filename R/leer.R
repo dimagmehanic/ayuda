@@ -306,6 +306,26 @@ leer.MariaDBConnection <- function(con, table, ...) {
   )
 }
 
+# PqConnection (PostgreSQL)
+#' @export
+leer.PqConnection <- function(con, table, ...) {
+  tryCatch(
+    {
+      message("🗄️ PostgreSQL source detected")
+      message("🔄 Creating lazy table reference for: ", table)
+
+      res <- dplyr::tbl(con, table)
+
+      message("✅ Lazy table ready (use dplyr verbs or collect())")
+      return(res)
+    },
+    error = function(e) {
+      message("❌ Failed to access PostgreSQL table: ", table)
+      message("⚠️ Details: ", e$message)
+    }
+  )
+}
+
 # DBIConnection
 #' @export
 leer.DBIConnection <- function(con, table, ...) {
