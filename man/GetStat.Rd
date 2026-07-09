@@ -26,6 +26,10 @@ s$get_obs()
 \itemize{
 \item \href{#method-GetStat-new}{\code{GetStat$new()}}
 \item \href{#method-GetStat-obs}{\code{GetStat$obs()}}
+\item \href{#method-GetStat-range}{\code{GetStat$range()}}
+\item \href{#method-GetStat-central}{\code{GetStat$central()}}
+\item \href{#method-GetStat-var_sd}{\code{GetStat$var_sd()}}
+\item \href{#method-GetStat-iqr}{\code{GetStat$iqr()}}
 \item \href{#method-GetStat-list}{\code{GetStat$list()}}
 \item \href{#method-GetStat-clone}{\code{GetStat$clone()}}
 }
@@ -54,6 +58,94 @@ Initialize a new GetStat object
 Observation and missing value statistics
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{GetStat$obs(col = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A data frame with Metric and Value columns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetStat-range"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-range}{}}}
+\subsection{Method \code{range()}}{
+Range statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$range(col = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A data frame with Metric and Value columns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetStat-central"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-central}{}}}
+\subsection{Method \code{central()}}{
+Central tendency statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$central(col = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A data frame with Metric and Value columns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetStat-var_sd"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-var_sd}{}}}
+\subsection{Method \code{var_sd()}}{
+Variance and standard deviation statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$var_sd(col = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A data frame with Metric and Value columns.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetStat-iqr"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-iqr}{}}}
+\subsection{Method \code{iqr()}}{
+IQR and outlier fence statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$iqr(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

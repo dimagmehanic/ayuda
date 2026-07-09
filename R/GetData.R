@@ -26,7 +26,7 @@ GetData <- R6::R6Class("GetData", # nolint
     #' @param ... Additional arguments passed to internal methods
     initialize = function(x, db = NULL, ...) {
 
-      args  <- list(db = db, ...)
+        args  <- list(db = db, ...)
 
       if (is.null(args$db)) {
         args$db <- self$guess_ext(x)

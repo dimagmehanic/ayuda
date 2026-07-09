@@ -63,10 +63,33 @@ system("tar -cvf tests/testthat/fixtures/test.tar tests/testthat/fixtures/test.r
 
 #### Stats
 ```{r}
-get_obs(c(1, 2, 3, NA))
+get_obs(mtcars$hp)
+get_range(mtcars$hp)
+get_central(mtcars$hp)
+get_var_sd(mtcars$hp)
+get_iqr(mtcars$hp)
+get_skewness(mtcars$hp)
 
 test <- GetStat$new(mtcars)
+
 test$obs()
+test$range()
+test$central()
+test$var_sd()
+test$iqr()
+test$skewness()
+
+dbpath <- "tests/testthat/fixtures/test.db"
+lcars <- leer(dbpath)
+
+lazy <- lcars$leer("mtcars") 
+test1 <- GetStat$new(lazy) 
+test1$obs()
+test1$range()
+test1$central()
+test1$var_sd()
+test1$iqr()
+test1$skewness()
 ```
 
 
