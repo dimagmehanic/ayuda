@@ -10,7 +10,7 @@ missing values, and frequency tables for a vector.
 \examples{
 # Numeric vector
 s <- GetStat$new(c(1, 2, 3, NA, 5, 5, 6))
-s$get_obs()
+s$obs()
 
 
 }
@@ -30,6 +30,10 @@ s$get_obs()
 \item \href{#method-GetStat-central}{\code{GetStat$central()}}
 \item \href{#method-GetStat-var_sd}{\code{GetStat$var_sd()}}
 \item \href{#method-GetStat-iqr}{\code{GetStat$iqr()}}
+\item \href{#method-GetStat-skewness}{\code{GetStat$skewness()}}
+\item \href{#method-GetStat-kurtosis}{\code{GetStat$kurtosis()}}
+\item \href{#method-GetStat-cv}{\code{GetStat$cv()}}
+\item \href{#method-GetStat-zscore}{\code{GetStat$zscore()}}
 \item \href{#method-GetStat-list}{\code{GetStat$list()}}
 \item \href{#method-GetStat-clone}{\code{GetStat$clone()}}
 }
@@ -69,9 +73,6 @@ Observation and missing value statistics
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-A data frame with Metric and Value columns.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-range"></a>}}
@@ -90,9 +91,6 @@ Range statistics
 \item{\code{...}}{Additional arguments passed to read functions}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A data frame with Metric and Value columns.
 }
 }
 \if{html}{\out{<hr>}}
@@ -113,9 +111,6 @@ Central tendency statistics
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-A data frame with Metric and Value columns.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-var_sd"></a>}}
@@ -134,9 +129,6 @@ Variance and standard deviation statistics
 \item{\code{...}}{Additional arguments passed to read functions}
 }
 \if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A data frame with Metric and Value columns.
 }
 }
 \if{html}{\out{<hr>}}
@@ -157,8 +149,81 @@ IQR and outlier fence statistics
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-A data frame with Metric and Value columns.
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetStat-skewness"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-skewness}{}}}
+\subsection{Method \code{skewness()}}{
+Skewness statistic
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$skewness(col = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetStat-kurtosis"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-kurtosis}{}}}
+\subsection{Method \code{kurtosis()}}{
+Kurtosis statistic
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$kurtosis(col = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetStat-cv"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-cv}{}}}
+\subsection{Method \code{cv()}}{
+Coefficient of variation statistic
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$cv(col = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetStat-zscore"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-zscore}{}}}
+\subsection{Method \code{zscore()}}{
+Z-score statistic
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$zscore(col = NULL, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

@@ -69,6 +69,9 @@ get_central(mtcars$hp)
 get_var_sd(mtcars$hp)
 get_iqr(mtcars$hp)
 get_skewness(mtcars$hp)
+get_kurtosis(mtcars$hp)
+get_cv(mtcars$hp)
+get_zscore(mtcars$hp)
 
 test <- GetStat$new(mtcars)
 
@@ -78,6 +81,9 @@ test$central()
 test$var_sd()
 test$iqr()
 test$skewness()
+test$kurtosis(c('hp', 'mpg'))
+test$cv(c('hp', 'mpg'))
+test$zscore(c('hp', 'mpg'))
 
 dbpath <- "tests/testthat/fixtures/test.db"
 lcars <- leer(dbpath)
@@ -90,6 +96,9 @@ test1$central()
 test1$var_sd()
 test1$iqr()
 test1$skewness()
+test1$kurtosis(c('hp', 'mpg'))
+test1$cv(c('hp', 'mpg'))
+test1$zscore(c('hp', 'mpg'))
 ```
 
 
