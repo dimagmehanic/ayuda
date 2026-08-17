@@ -25,7 +25,6 @@ use_package("tidyverse", type = "depends")
 libs2use %>% purrr::walk(use_package)
 ```
 
-
 ##### 📦 renv Quick Commands
 
 ```{r}
@@ -59,7 +58,38 @@ save(test1, test2, file = "tests/testthat/fixtures/test.rda")
 haven::write_xpt( mtcars, path = "tests/testthat/fixtures/test.xpt")
 system("zip tests/testthat/fixtures/test.zip tests/testthat/fixtures/test.rds")
 system("tar -cvf tests/testthat/fixtures/test.tar tests/testthat/fixtures/test.rds")
- 
+
+```
+
+#### Stats
+```{r}
+get_obs(mtcars$hp)
+get_range(mtcars$hp)
+get_central(mtcars$hp)
+get_var_sd(mtcars$hp)
+get_iqr(mtcars$hp)
+get_skewness(mtcars$hp)
+
+test <- GetStat$new(mtcars)
+
+test$obs()
+test$range()
+test$central()
+test$var_sd()
+test$iqr()
+test$skewness()
+
+dbpath <- "tests/testthat/fixtures/test.db"
+lcars <- leer(dbpath)
+
+lazy <- lcars$leer("mtcars") 
+test1 <- GetStat$new(lazy) 
+test1$obs()
+test1$range()
+test1$central()
+test1$var_sd()
+test1$iqr()
+test1$skewness()
 ```
 
 

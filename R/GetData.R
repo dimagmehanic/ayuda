@@ -6,27 +6,27 @@
 #'
 #' @examples
 #' # SQL example
-#' # db <- DataCargar$new("data.db", db = "sqlite")
+#' # db <- GetData$new("data.db", db = "sqlite")
 #' # db$leer("my_table")
 #' # db$disconnect()
 #' # zip example
-#' # db <- DataCargar$new("data.zip", db = "zip")
+#' # db <- GetData$new("data.zip", db = "zip")
 #' # db$leer("file_in_zip.csv")
 #' # db$disconnect()
 
 # Define R6 class
 #' @export
-DataCargar <- R6::R6Class("DataCargar", # nolint
+GetData <- R6::R6Class("GetData", # nolint
   public = list(
     datos = NULL,
     # Initialize db type: "mysql", "sqlite", "zip", "tar", "db" etc or path to folder # nolint
-    #' @description Initialize a new DataCargar object
+    #' @description Initialize a new GetData object
     #' @param x Path to file, directory, archive, or a DBIConnection object
     #' @param db database
     #' @param ... Additional arguments passed to internal methods
     initialize = function(x, db = NULL, ...) {
 
-      args  <- list(db = db, ...)
+        args  <- list(db = db, ...)
 
       if (is.null(args$db)) {
         args$db <- self$guess_ext(x)
@@ -58,9 +58,13 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       } else if (args$db == "mysql") {
         self$datos <- args$db
         private$pointer <- private$connect_mysql(dbname = x, ...)
+      } else if (args$db == "postgres") {
+          self$datos <- args$db
+          private$pointer <- private$connect_postgres(dbname = x, ...)
       } else {
         stop("❌ Unsupported database.")
       }
+
     },
 
     # Method to read a table(s)
@@ -80,7 +84,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
           # attach file as class to filename
           y <- structure(y, class = "file")
           leer(y, ...)
-        }else if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) { # nolint
+        }else if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres")) { # nolint
           leer(private$pointer, table_name, ...)
         }
       }else {
@@ -102,7 +106,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
 
       if (is.null(private$pointer)) stop("No connection established")
 
-      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) { # nolint
+      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres")) { # nolint
         DBI::dbWriteTable(private$pointer, name = table_name, value = df, ...)
       }else {
         message(sprintf("❌ Failed to write table '%s': the current database type does not support this operation.", # nolint
@@ -124,7 +128,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
     disconnect = function() {
 
       if (!is.null(private$pointer)) {
-        if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) { # nolint
+        if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres")) { # nolint
           DBI::dbDisconnect(private$pointer)
         } else if (self$datos %in% c("dir")) {
           private$pointer <- NULL
@@ -141,7 +145,7 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
     list = function(...) {
       message("🔍 Listing available tables...")
 
-      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql")) {
+      if (self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres")) {
 
         message("🗄️ Detected database source")
         tables <- DBI::dbListTables(private$pointer)
@@ -164,10 +168,10 @@ DataCargar <- R6::R6Class("DataCargar", # nolint
       }
     },
 
-    #' @return The DataCargar object itself (invisibly), allowing for method chaining # nolint
+    #' @return The GetData object itself (invisibly), allowing for method chaining # nolint
     #' @export
     info = function() {
-      message("ℹ️ DataCargar object info")
+      message("ℹ️ GetData object info")
       message("─────────────────────────────")
 
       # Source type
