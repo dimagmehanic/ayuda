@@ -1,10 +1,12 @@
 ### Load require libraries
+
 ```{r, echo=FALSE}
 library(devtools)
 library(magrittr)
 ```
 
 ### Document, install and load the package
+
 ```{r}
 .libPaths()
 document()
@@ -14,6 +16,7 @@ test()
 ```
 
 ### Load required libraries for the package
+
 ```{r}
 libs2use <- c(
   "lobstr", "haven", "RSQLite", "RPostgres",
@@ -25,20 +28,8 @@ use_package("tidyverse", type = "depends")
 libs2use %>% purrr::walk(use_package)
 ```
 
-##### 📦 renv Quick Commands
+##### Test data generate
 
-```{r}
-renv::init() # init project
-renv::snapshot() # save packages
-renv::restore() # restore from lockfile
-renv::status() # check differences
-renv::install("pkg") # install package
-renv::update() # update packages
-renv::clean() # remove unused
-```
-💡 Commit `renv.lock` for reproducibility
-
-##### Test data generate 
 ```{r}
 library(DBI)
 library(RSQLite)
@@ -62,6 +53,7 @@ system("tar -cvf tests/testthat/fixtures/test.tar tests/testthat/fixtures/test.r
 ```
 
 #### Stats
+
 ```{r}
 get_obs(mtcars$hp)
 get_range(mtcars$hp)
@@ -100,5 +92,3 @@ test1$kurtosis(c('hp', 'mpg'))
 test1$cv(c('hp', 'mpg'))
 test1$zscore(c('hp', 'mpg'))
 ```
-
-
