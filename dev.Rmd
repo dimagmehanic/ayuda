@@ -11,6 +11,8 @@ library(magrittr)
 .libPaths()
 document()
 install()
+check()
+build()
 load_all()
 test()
 ```
