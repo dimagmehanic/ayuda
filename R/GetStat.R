@@ -8,7 +8,7 @@
 #' @examples
 #' # Numeric vector
 #' s <- GetStat$new(c(1, 2, 3, NA, 5, 5, 6))
-#' s$get_obs()
+#' s$obs()
 #'
 #'
 #' @export
@@ -21,7 +21,7 @@ GetStat <- R6::R6Class("GetStat", # nolint
     initialize = function(x) {
       self$x <- x
       if (is.vector(self$x)) {
-        message("📊 a vector of length ", length(self$x))
+        message("📊 a vector of length ", sum(!is.na(self$x)))
       } else {
         message("📦 a data frame with ",
                 ncol(self$x), " columns and ", nrow(self$x), " rows")
@@ -29,14 +29,19 @@ GetStat <- R6::R6Class("GetStat", # nolint
     },
 
     #' @description Observation and missing value statistics
-    #' @return A data frame with Metric and Value columns.
     #' @param col column names
     #' @param ... Additional arguments passed to read functions
     obs = function(col = NULL, ...) {
       if (is.vector(self$x)) {
         get_obs(self$x)
       } else {
-        if (is.null(col)) col <- colnames(self$x)
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
 
         if (inherits(self$x, "tbl_lazy")) {
           df <- self$x %>%
@@ -73,14 +78,19 @@ GetStat <- R6::R6Class("GetStat", # nolint
     },
 
     #' @description Range statistics
-    #' @return A data frame with Metric and Value columns.
     #' @param col column names
     #' @param ... Additional arguments passed to read functions
     range = function(col = NULL, ...) {
       if (is.vector(self$x)) {
         get_range(self$x, ...)
       } else {
-        if (is.null(col)) col <- colnames(self$x)
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
 
         if (inherits(self$x, "tbl_lazy")) {
           df <- self$x %>%
@@ -115,14 +125,19 @@ GetStat <- R6::R6Class("GetStat", # nolint
     },
 
     #' @description Central tendency statistics
-    #' @return A data frame with Metric and Value columns.
     #' @param col column names
     #' @param ... Additional arguments passed to read functions
     central = function(col = NULL, ...) {
       if (is.vector(self$x)) {
         get_central(self$x, ...)
       } else {
-        if (is.null(col)) col <- colnames(self$x)
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
 
         if (inherits(self$x, "tbl_lazy")) {
           df <- self$x %>%
@@ -157,14 +172,19 @@ GetStat <- R6::R6Class("GetStat", # nolint
     },
 
     #' @description Variance and standard deviation statistics
-    #' @return A data frame with Metric and Value columns.
     #' @param col column names
     #' @param ... Additional arguments passed to read functions
     var_sd = function(col = NULL, ...) {
       if (is.vector(self$x)) {
         get_var_sd(self$x, ...)
       } else {
-        if (is.null(col)) col <- colnames(self$x)
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
 
         if (inherits(self$x, "tbl_lazy")) {
           df <- self$x %>%
@@ -198,14 +218,19 @@ GetStat <- R6::R6Class("GetStat", # nolint
     },
 
     #' @description IQR and outlier fence statistics
-    #' @return A data frame with Metric and Value columns.
     #' @param col column names
     #' @param ... Additional arguments passed to read functions
     iqr = function(col = NULL, ...) {
       if (is.vector(self$x)) {
         get_iqr(self$x, ...)
       } else {
-        if (is.null(col)) col <- colnames(self$x)
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
 
         if (inherits(self$x, "tbl_lazy")) {
           df <- self$x %>%
@@ -223,12 +248,12 @@ GetStat <- R6::R6Class("GetStat", # nolint
           ) %>%
           dplyr::group_by(Variable) %>%
           dplyr::summarise(
+            `Lower outer fence` = stats::quantile(Value, 0.25, ...) - 3 * stats::IQR(Value, ...),
+            `Lower inner fence` = stats::quantile(Value, 0.25, ...) - 1.5 * stats::IQR(Value, ...),
             Q1 = stats::quantile(Value, 0.25, ...),
             Median = stats::quantile(Value, 0.5, ...),
             Q3 = stats::quantile(Value, 0.75, ...),
             IQR = stats::IQR(Value, ...),
-            `Lower outer fence` = Q1 - 3 * IQR,
-            `Lower inner fence` = Q1 - 1.5 * IQR,
             `Upper inner fence` = Q3 + 1.5 * IQR,
             `Upper outer fence` = Q3 + 3 * IQR
           ) %>%
@@ -245,7 +270,6 @@ GetStat <- R6::R6Class("GetStat", # nolint
     },
 
     #' @description Skewness statistic
-    #' @return A data frame with Metric and Value columns.
     #' @param col column names
     #' @param ... Additional arguments passed to read functions
     skewness = function(col = NULL, ...) {
@@ -255,7 +279,13 @@ GetStat <- R6::R6Class("GetStat", # nolint
           Value = get_skewness(self$x, ...)
         )
       } else {
-        if (is.null(col)) col <- colnames(self$x)
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
 
         if (inherits(self$x, "tbl_lazy")) {
           df <- self$x %>%
@@ -274,7 +304,7 @@ GetStat <- R6::R6Class("GetStat", # nolint
           dplyr::group_by(Variable) %>%
           dplyr::summarise(
             Skewness = {
-              n <- dplyr::n()
+              n <- sum(!is.na(Value))
               m <- mean(Value, ...)
               s <- sd(Value, ...)
               sum(((Value - m)^3) / (s^3)) / n
@@ -289,6 +319,142 @@ GetStat <- R6::R6Class("GetStat", # nolint
             names_from = Variable,
             values_from = Value
           )
+      }
+    },
+
+    #' @description Kurtosis statistic
+    #' @param col column names
+    #' @param ... Additional arguments passed to read functions
+    kurtosis = function(col = NULL, ...) {
+      if (is.vector(self$x)) {
+        data.frame(
+          Statistic = "Kurtosis",
+          Value = get_kurtosis(self$x, ...)
+        )
+      } else {
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
+
+        if (inherits(self$x, "tbl_lazy")) {
+          df <- self$x %>%
+            dplyr::select(dplyr::all_of(col)) %>%
+            dplyr::collect()
+        } else {
+          df <- self$x %>% dplyr::select(dplyr::all_of(col))
+        }
+
+        df %>%
+          tidyr::pivot_longer(
+            cols = dplyr::everything(),
+            names_to = "Variable",
+            values_to = "Value"
+          ) %>%
+          dplyr::group_by(Variable) %>%
+          dplyr::summarise(
+            Kurtosis = {
+              n <- sum(!is.na(Value))
+              m <- mean(Value, ...)
+              s <- sd(Value, ...)
+              sum(((Value - m)^4) / (s^4)) / n
+            }
+          ) %>%
+          tidyr::pivot_longer(
+            cols = -Variable,
+            names_to = "Metric",
+            values_to = "Value"
+          ) %>%
+          tidyr::pivot_wider(
+            names_from = Variable,
+            values_from = Value
+          )
+      }
+    },
+
+    #' @description Coefficient of variation statistic
+    #' @param col column names
+    #' @param ... Additional arguments passed to read functions
+    cv = function(col = NULL, ...) {
+      if (is.vector(self$x)) {
+        data.frame(
+          Statistic = "CV (%)",
+          Value = get_cv(self$x, ...)
+        )
+      } else {
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
+
+        if (inherits(self$x, "tbl_lazy")) {
+          df <- self$x %>%
+            dplyr::select(dplyr::all_of(col)) %>%
+            dplyr::collect()
+        } else {
+          df <- self$x %>% dplyr::select(dplyr::all_of(col))
+        }
+
+        df %>%
+          tidyr::pivot_longer(
+            cols = dplyr::everything(),
+            names_to = "Variable",
+            values_to = "Value"
+          ) %>%
+          dplyr::group_by(Variable) %>%
+          dplyr::summarise(
+            `CV (%)` = 100 * sd(Value, ...) / mean(Value, ...)
+          ) %>%
+          tidyr::pivot_longer(
+            cols = -Variable,
+            names_to = "Metric",
+            values_to = "Value"
+          ) %>%
+          tidyr::pivot_wider(
+            names_from = Variable,
+            values_from = Value
+          )
+      }
+    },
+
+    #' @description Z-score statistic
+    #' @param col column names
+    #' @param ... Additional arguments passed to read functions
+    zscore = function(col = NULL, ...) {
+      if (is.vector(self$x)) {
+        data.frame(
+          Value = self$x,
+          `Z-score` = get_zscore(self$x, ...)
+        )
+      } else {
+        if (is.null(col)) {
+          if (inherits(self$x, "tbl_lazy")) {
+            col <- self$x %>% dplyr::select(dplyr::where(is.numeric)) %>% names()
+          } else {
+            col <- colnames(self$x)[sapply(self$x, is.numeric)]
+          }
+        }
+
+        if (inherits(self$x, "tbl_lazy")) {
+          df <- self$x %>%
+            dplyr::select(dplyr::all_of(col)) %>%
+            dplyr::collect()
+        } else {
+          df <- self$x %>% dplyr::select(dplyr::all_of(col))
+        }
+
+        df %>%
+          dplyr::summarise(dplyr::across(
+            dplyr::everything(),
+            ~ scale(.x, ...),
+            .names = "{.col}_zscore"
+          ))
       }
     },
 
