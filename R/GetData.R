@@ -26,14 +26,14 @@ GetData <- R6::R6Class("GetData", # nolint
     #' @param ... Additional arguments passed to internal methods
     initialize = function(x, db = NULL, ...) {
 
-        args  <- list(db = db, ...)
+      args  <- list(db = db, ...)
 
       if (is.null(args$db)) {
         args$db <- self$guess_ext(x)
       }
 
       if (is.na(file.info(x)$isdir) &&
-            !(args$db %in% c("sqlite", "db", "sqlite3", "db3"))) {
+            !(args$db %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "postgres"))) {
         stop("❌ Path does not exist: ", x)
       } else if (is.na(file.info(x)$isdir) &&
                    (args$db %in% c("sqlite", "db", "sqlite3", "db3"))) {
@@ -59,8 +59,8 @@ GetData <- R6::R6Class("GetData", # nolint
         self$datos <- args$db
         private$pointer <- private$connect_mysql(dbname = x, ...)
       } else if (args$db == "postgres") {
-          self$datos <- args$db
-          private$pointer <- private$connect_postgres(dbname = x, ...)
+        self$datos <- args$db
+        private$pointer <- private$connect_postgres(dbname = x, ...)
       } else {
         stop("❌ Unsupported database.")
       }
@@ -194,18 +194,19 @@ GetData <- R6::R6Class("GetData", # nolint
     # MySQL connection
     connect_mysql = function(...) {
 
-      args <- list(...)
+      args <- list()
+      arggs <- list(...)
 
-      args$dbname <- ask_input(args$dbname,
+      args$dbname <- ask_input(arggs$dbname,
                                "🗄️ Database name (default: test): ",
                                "test")
-      args$host <- ask_input(args$host,
+      args$host <- ask_input(arggs$host,
                              "🌐 Host (e.g., localhost): ",
                              "127.0.0.1")
-      args$port <- ask_input(args$port,
+      args$port <- ask_input(arggs$port,
                              "🔌 Port (e.g., 3306): ",
                              "3306")
-      args$user <- ask_input(args$user,
+      args$user <- ask_input(arggs$user,
                              paste0("👤 User (default: ", whoami(), "): "),
                              whoami())
 
@@ -227,33 +228,34 @@ GetData <- R6::R6Class("GetData", # nolint
     # Postgres connection
     connect_postgres = function(...) {
 
-        args <- list(...)
+      args <- list()
+      arggs <- list(...)
 
-        args$dbname <- ask_input(args$dbname,
-                                 "🗄️ Database name (default: test): ",
-                                 "test")
-        args$host <- ask_input(args$host,
-                               "🌐 Host (e.g., localhost): ",
-                               "127.0.0.1")
-        args$port <- ask_input(args$port,
-                               "🔌 Port (e.g., 5432): ",
-                               "5432")
-        args$user <- ask_input(args$user,
-                               paste0("👤 User (default: ", whoami(), "): "),
-                               whoami())
+      args$dbname <- ask_input(arggs$dbname,
+                               "🗄️ Database name (default: test): ",
+                               "test")
+      args$host <- ask_input(arggs$host,
+                             "🌐 Host (e.g., localhost): ",
+                             "127.0.0.1")
+      args$port <- ask_input(arggs$port,
+                             "🔌 Port (e.g., 5432): ",
+                             "5432")
+      args$user <- ask_input(arggs$user,
+                             paste0("👤 User (default: ", whoami(), "): "),
+                             whoami())
 
-        ### Connection Check
-        tryCatch(
-            {
-                message("🔄 Attempting PostgreSQL database connection...")
-                con <- do.call(DBI::dbConnect, c(list(RPostgres::Postgres()), args, list(password = passwd()))) # nolint
-                message("✅ Connection successful")
-                return(con)
-            },
-            error = function(e) {
-                message("❌ Connection failed: ", e$message)
-            }
-        )
+      ### Connection Check
+      tryCatch(
+        {
+          message("🔄 Attempting PostgreSQL database connection...")
+          con <- do.call(DBI::dbConnect, c(list(RPostgres::Postgres()), args, list(password = passwd()))) # nolint
+          message("✅ Connection successful")
+          return(con)
+        },
+        error = function(e) {
+          message("❌ Connection failed: ", e$message)
+        }
+      )
     },
 
     # SQLite connection
@@ -287,11 +289,11 @@ GetData <- R6::R6Class("GetData", # nolint
 
           for (stmt in statements) {
 
-              stmt <- trimws(stmt)
+            stmt <- trimws(stmt)
 
-              if (nzchar(stmt)) {
-                  DBI::dbExecute(con, stmt)
-              }
+            if (nzchar(stmt)) {
+              DBI::dbExecute(con, stmt)
+            }
           }
 
           message("✅ Connection successful")

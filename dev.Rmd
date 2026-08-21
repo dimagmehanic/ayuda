@@ -94,3 +94,12 @@ test1$kurtosis(c('hp', 'mpg'))
 test1$cv(c('hp', 'mpg'))
 test1$zscore(c('hp', 'mpg'))
 ```
+
+```{r}
+### try postgress connection
+library(ayuda)
+pg <- leer("tmp", name="postgres", port=5432, host="postgres", user="postgres")
+pg$list()
+
+```
+

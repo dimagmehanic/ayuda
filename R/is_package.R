@@ -17,5 +17,5 @@
 #' is_package("dplyr")
 #' is_package("haven")
 is_package <- function(x) {
-    requireNamespace(x, quietly = TRUE)
+  requireNamespace(x, quietly = TRUE)
 }

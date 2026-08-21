@@ -18,72 +18,72 @@ leer <- function(x, ...) {
 #' @export
 leer.character <- function(x, ...) {
 
-    # Auto-detect path type and read data
-    ext <- tools::file_ext(tolower(trimws(x)))
-    ext_bool <- nzchar(ext)
-    ext_dbs <- c("sqlite", "zip", "tar", "db", "sqlite3", "db3", "sql")
-    isdir <- file.info(x)$isdir
-    # if NA the set FALSE
-    isdir <- ifelse(is.na(isdir), FALSE, isdir)
+  # Auto-detect path type and read data
+  ext <- tools::file_ext(tolower(trimws(x)))
+  ext_bool <- nzchar(ext)
+  ext_dbs <- c("sqlite", "zip", "tar", "db", "sqlite3", "db3", "sql")
+  isdir <- file.info(x)$isdir
+  # if NA the set FALSE
+  isdir <- ifelse(is.na(isdir), FALSE, isdir)
+  args  <- list(...)
 
+  if (!isdir && ext_bool && !(ext %in% ext_dbs)) {
+    # attach file as class to filename
+    y <- structure(x, class = "file")
+    leer(y, ...)
+  } else if (!isdir && ext_bool && ext %in% ext_dbs) {
 
-    if (!isdir && ext_bool && !(ext %in% ext_dbs)) {
-        # attach file as class to filename
-        y <- structure(x, class = "file")
-        leer(y, ...)
-    } else if (!isdir && ext_bool && ext %in% ext_dbs) {
+    # Friendly message about  object
+    message("✅ R6 object of class 'GetData' returned.\n",
+            "You can use its methods to interact with the data, for example:\n",
+            "  obj$list()   # list data\n",
+            "  obj$info()   # show info")
 
-        # Friendly message about  object
-        message("✅ R6 object of class 'GetData' returned.\n",
-                "You can use its methods to interact with the data, for example:\n",
-                "  obj$list()   # list data\n",
-                "  obj$info()   # show info")
+    invisible(GetData$new(x, db = ext))  # call GetData R6 class
 
-        invisible(GetData$new(x, db = ext))  # call GetData R6 class
+  } else if (isdir) {
 
-    } else if (isdir) {
+    # Friendly message about  object
+    message("✅ R6 object of class 'GetData' returned.\n",
+            "You can use its methods to interact with the data, for example:\n",
+            "  obj$list()   # list data\n",
+            "  obj$info()   # show info")
 
-        # Friendly message about  object
-        message("✅ R6 object of class 'GetData' returned.\n",
-                "You can use its methods to interact with the data, for example:\n",
-                "  obj$list()   # list data\n",
-                "  obj$info()   # show info")
+    invisible(GetData$new(x, db = "dir"))  # call GetData R6 class
 
-        invisible(GetData$new(x, db = "dir"))  # call GetData R6 class
-
-    } else if (is_package(x)) {
-        # attach package as class to filename
-        y <- structure(x, class = "package")
-        leer(y, ...)
-    } else {
-        tryCatch(
-            {
-                dbname <- ask_input(
-                    args$dbname,
-                    "🗄️  Database name (default: postgres): ",
-                    "postgres"
-                )
-
-                message(
-                    "✅ Connected to database '", dbname, "'.\n",
-                    "📦 Returning a 'GetData' R6 object.\n",
-                    "Use the object's methods to work with the database, for example:\n",
-                    "  • obj$list() # list data\n",
-                    "  • obj$info() # show info"
-                )
-
-                invisible(GetData$new(x, db = dbname))
-
-            },
-            error = function(e) {
-                message(
-                    "❌ Failed to connect to database '", dbname, "'.\n",
-                    "Reason: ", conditionMessage(e)
-                )
-                invisible(NULL)
-            }
+  } else if (is_package(x)) {
+    # attach package as class to filename
+    y <- structure(x, class = "package")
+    leer(y, ...)
+  } else {
+    tryCatch(
+      {
+        name <- ask_input(
+          args$name,
+          "🗄️  Database name (default: postgres): ",
+          "postgres"
         )
-    }
+
+        message(
+          "✅ Connected to database '", name, "'.\n",
+          "📦 Returning a 'GetData' R6 object.\n",
+          "Use the object's methods to work with the database, for example:\n",
+          "  • obj$list() # list data\n",
+          "  • obj$info() # show info"
+        )
+
+        invisible(GetData$new(x, db = name, ...))
+
+      },
+      error = function(e) {
+        message(
+          "❌ Failed to connect to database '", name, "'.\n",
+          "Reason: ", conditionMessage(e)
+        )
+        invisible(NULL)
+      }
+    )
+  }
 }
 
 # file
@@ -132,16 +132,16 @@ leer.tsv <- function(filename, ...) {
 # rds
 #' @export
 leer.rds <- function(filename, ...) {
-    tryCatch(
-        {
-            message("📄 Reading Rds file ...")
-            readRDS(filename, ...)
-        },
-        error = function(e) {
-            message("↪️ Falling back to default method")
-            leer.default(filename, ...)
-        }
-    )
+  tryCatch(
+    {
+      message("📄 Reading Rds file ...")
+      readRDS(filename, ...)
+    },
+    error = function(e) {
+      message("↪️ Falling back to default method")
+      leer.default(filename, ...)
+    }
+  )
 }
 
 # rda
@@ -177,14 +177,14 @@ leer.rda <- function(filename, ...) {
   }
 
   tryCatch(
-  {
-    message("📄 Reading rda file ...")
-    rda_load(filename, ...)
-  },
-  error = function(e) {
-    message("↪️ Falling back to default method")
-    leer.default(filename, ...)
-  }
+    {
+      message("📄 Reading rda file ...")
+      rda_load(filename, ...)
+    },
+    error = function(e) {
+      message("↪️ Falling back to default method")
+      leer.default(filename, ...)
+    }
   )
 }
 
@@ -192,45 +192,45 @@ leer.rda <- function(filename, ...) {
 # package
 #' @export
 leer.package <- function(filename, ...) {
-    ##lazy load package datasets
-    package_load <- function(f){
-        names <- data(package = f)$results[, "Item"]
+  ##lazy load package datasets
+  package_load <- function(f){
+    names <- data(package = f)$results[, "Item"]
 
-        if (length(names) >= 1) {
-            message(
-                "📦 Lazy-loaded ", length(names), " dataset",
-                if (length(names) != 1) "s" else "",
-                " from package '", f, "'.\n",
-                "Examples: ", paste(head(names, 3), collapse = ", "),
-                if (length(names) > 3) ", ..." else "", "\n",
-                "Load a dataset with:\n",
-                "  data <- result[['dataset_name']]()"
-            )
-            df <- purrr::set_names(
-                purrr::map(names, function(nm) {
-                    function() {
-                        # load the data
-                        data(list = nm, package = f)
-                        get(nm)
-                    }
-                }),
-                names)
-        }else{
-            df <- NULL
-        }
-        return (df)
+    if (length(names) >= 1) {
+      message(
+        "📦 Lazy-loaded ", length(names), " dataset",
+        if (length(names) != 1) "s" else "",
+        " from package '", f, "'.\n",
+        "Examples: ", paste(head(names, 3), collapse = ", "),
+        if (length(names) > 3) ", ..." else "", "\n",
+        "Load a dataset with:\n",
+        "  data <- result[['dataset_name']]()"
+      )
+      df <- purrr::set_names(
+        purrr::map(names, function(nm) {
+          function() {
+            # load the data
+            data(list = nm, package = f)
+            get(nm)
+          }
+        }),
+        names)
+    }else{
+      df <- NULL
     }
+    return (df)
+  }
 
-    tryCatch(
-        {
-            message("📄 Reading package ", filename, " ...")
-            package_load(filename, ...)
-        },
-        error = function(e) {
-            message("↪️ Falling back to default method")
-            leer.default(filename, ...)
-        }
-    )
+  tryCatch(
+    {
+      message("📄 Reading package ", filename, " ...")
+      package_load(filename, ...)
+    },
+    error = function(e) {
+      message("↪️ Falling back to default method")
+      leer.default(filename, ...)
+    }
+  )
 }
 # csv2
 #' @export
