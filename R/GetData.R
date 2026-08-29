@@ -115,6 +115,49 @@ GetData <- R6::R6Class("GetData", # nolint
 
     },
 
+    #' @description Write a large local file to the DB in chunks
+    #' @param file_path path to the local data file to insert 
+    #' @param db_args named list of arguments passed to the DB writer
+    #'        (e.g. overwrite) for each chunk
+    #' @param readr_args named list of arguments passed to the chunked reader
+    #'        (e.g. col_types, delimiter, chunk_size)
+    #' @return TRUE invisibly on success
+    write_chunked = function(file_path, db_args = list(), readr_args = list()) {
+
+      table_name <- tools::file_path_sans_ext(basename(file_path))
+
+      if (is.null(private$pointer)) stop("No connection established")
+
+      if (!(self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres"))) { # nolint
+        stop("❌ Chunked writing is only supported for database sources.")
+      }
+
+      message("📄 Reading '", file_path, "' in chunks (default 10000 rows) ...")
+
+      first_chunk <- TRUE
+
+      # Raw callback inserts each chunk into the DB. The first chunk creates the
+      # table (overwrite=TRUE), subsequent chunks append. db_args is passed only
+      # to the DB writer and read_args only to the reader, so the two never
+      # overlap.
+      cb <- function(x, pos) {
+        if (first_chunk) {
+          do.call(self$write, c(list(x, table_name), db_args))
+          first_chunk <<- FALSE
+        }else {
+          do.call(DBI::dbAppendTable,
+                  c(list(private$pointer, name = table_name, value = x), db_args))
+        }
+      }
+
+      # Reuse leer's existing chunked S3 methods (csv_chunked, tsv_chunked, ...).
+      # leer() dispatches on the file's extension.
+      do.call(leer, c(list(file_path, callback = cb), readr_args))
+
+      message("✅ Finished writing '", table_name, "'.")
+      invisible(TRUE)
+    },
+
     #' @description Guess file extension
     #' @param x path or file
     #' @return character string
@@ -166,6 +209,17 @@ GetData <- R6::R6Class("GetData", # nolint
         message("⚠️ Unsupported data source type: ", self$datos)
         return(NULL) # nolint
       }
+    },
+    
+    #' @description Connection pointer
+    #' @return path or established connection
+    #'
+    #' Returns the internal connection pointer stored in \code{private$pointer}.
+    #' For database sources this is the active DB connection (e.g. MySQL), and
+    #' for file-based sources it is the path to the data. It is a read-only
+    #' accessor and does not open or close any connection itself.
+    con = function(){
+      return(private$pointer)
     },
 
     #' @return The GetData object itself (invisibly), allowing for method chaining # nolint

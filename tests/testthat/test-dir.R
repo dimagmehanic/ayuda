@@ -6,7 +6,7 @@ test_that("dir exists", {
 test_that("dir fixture list datasets works", {
   db_path <- testthat::test_path("fixtures")
   result <- leer(db_path)
-  expect_equal( result$list() |> length(), 8)
+  expect_equal( result$list() |> length(), 9)
 })
 
 test_that("dir fixture 2read data works", {

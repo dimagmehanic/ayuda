@@ -98,8 +98,20 @@ test1$zscore(c('hp', 'mpg'))
 ```{r}
 ### try postgress connection
 library(ayuda)
-pg <- leer("tmp", name="postgres", port=5432, host="postgres", user="postgres")
+pg <- leer("ddt", database="postgres", port=5432, host="postgres", user="postgres")
+
 pg$list()
 
+ddt <- leer(file.path("~", "data", "raw", "ddt", "DDT_Contamination.csv"))
+ddt %>% pg$write("contamination")
+
+con <- pg$con() 
+
+
+
+
 ```
+
+
+
 

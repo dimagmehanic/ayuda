@@ -29,9 +29,11 @@ Load data from files, directories, archives, or databases.
     \item \href{#method-GetData-initialize}{\code{GetData$new()}}
     \item \href{#method-GetData-leer}{\code{GetData$leer()}}
     \item \href{#method-GetData-write}{\code{GetData$write()}}
+    \item \href{#method-GetData-write_chunked}{\code{GetData$write_chunked()}}
     \item \href{#method-GetData-guess_ext}{\code{GetData$guess_ext()}}
     \item \href{#method-GetData-disconnect}{\code{GetData$disconnect()}}
     \item \href{#method-GetData-list}{\code{GetData$list()}}
+    \item \href{#method-GetData-con}{\code{GetData$con()}}
     \item \href{#method-GetData-info}{\code{GetData$info()}}
     \item \href{#method-GetData-clone}{\code{GetData$clone()}}
   }
@@ -102,6 +104,32 @@ Load data from files, directories, archives, or databases.
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetData-write_chunked"></a>}}
+\if{latex}{\out{\hypertarget{method-GetData-write_chunked}{}}}
+\subsection{\code{GetData$write_chunked()}}{
+  Write a large local file to the DB in chunks
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{GetData$write_chunked(file_path, db_args = list(), readr_args = list())}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{file_path}}{path to the local data file to insert}
+      \item{\code{db_args}}{named list of arguments passed to the DB writer
+(e.g. overwrite) for each chunk}
+      \item{\code{readr_args}}{named list of arguments passed to the chunked reader
+(e.g. col_types, delimiter, chunk_size)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    TRUE invisibly on success
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-guess_ext"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-guess_ext}{}}}
 \subsection{\code{GetData$guess_ext()}}{
@@ -154,6 +182,26 @@ Load data from files, directories, archives, or databases.
   }
   \subsection{Returns}{
     character vector
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GetData-con"></a>}}
+\if{latex}{\out{\hypertarget{method-GetData-con}{}}}
+\subsection{\code{GetData$con()}}{
+  Connection pointer
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{GetData$con()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    path or established connection
+
+Returns the internal connection pointer stored in \code{private$pointer}.
+For database sources this is the active DB connection (e.g. MySQL), and
+for file-based sources it is the path to the data. It is a read-only
+accessor and does not open or close any connection itself.
   }
 }
 

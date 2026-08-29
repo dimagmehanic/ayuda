@@ -58,26 +58,26 @@ leer.character <- function(x, ...) {
   } else {
     tryCatch(
       {
-        name <- ask_input(
-          args$name,
+        database <- ask_input(
+          args$database,
           "🗄️  Database name (default: postgres): ",
           "postgres"
         )
 
         message(
-          "✅ Connected to database '", name, "'.\n",
+          "✅ Connected to database '", database, "'.\n",
           "📦 Returning a 'GetData' R6 object.\n",
           "Use the object's methods to work with the database, for example:\n",
           "  • obj$list() # list data\n",
           "  • obj$info() # show info"
         )
 
-        invisible(GetData$new(x, db = name, ...))
+        invisible(GetData$new(x, db = database, ...))
 
       },
       error = function(e) {
         message(
-          "❌ Failed to connect to database '", name, "'.\n",
+          "❌ Failed to connect to database '", database, "'.\n",
           "Reason: ", conditionMessage(e)
         )
         invisible(NULL)
@@ -92,11 +92,19 @@ leer.file <- function(x, ...) {
 
   filename <- tolower(trimws(x))
   ext <- tools::file_ext(filename)
-
-  # attach extension as class to filename
-  y <- structure(x, class = ext)
-
-  leer(y, ...)
+  args <- list(...) 
+    
+  if (((file.info(x)$size / 1024^2) >= 500) || (!is.null(args$callback))){
+    message("📦 File is larger than 500MB or a callback is provided. Reading in chunks...")
+    # attach extension as class to filename
+    y <- structure(x, class = paste0(ext, "_chunked"))
+    leer(y, ...)
+  } else{
+    # attach extension as class to filename
+    y <- structure(x, class = ext)
+    leer(y, ...)
+  }
+  
 }
 
 # csv
@@ -114,6 +122,51 @@ leer.csv <- function(filename, ...) {
   )
 }
 
+# csv_chunked
+#' @export
+leer.csv_chunked <- function(filename, ...) {
+  tryCatch(
+    {
+      args <- list(...)
+      
+      if (is.null(args$callback)) {
+        stop(
+          "❌ Please provide a callback function.\n",
+          "Example: callback = function(x, pos) { ... }"
+        )
+      }
+      
+      # Accept either a raw function or an already-wrapped SideEffectChunkCallback
+      if (inherits(args$callback, "SideEffectChunkCallback")) {
+        callback <- args$callback
+      } else if (is.function(args$callback)) {
+        callback <- readr::SideEffectChunkCallback$new(args$callback)
+      } else {
+        stop("❌ callback must be a function or a SideEffectChunkCallback.")
+      }
+
+      # Remove callback from ... so it is not forwarded to the reader again
+      args$callback <- NULL
+
+      message("📄 Reading CSV file in chunks(default is 10000 rows) ...")
+      message("🔄 Processing each chunk using the callback function...")
+      message("💡 The callback receives each chunk as a data frame and its starting row position.")
+      message("📦 Each chunk is processed independently to reduce memory usage.")
+      
+      do.call(
+        readr::read_csv_chunked,
+        c(list(file = filename, callback = callback), args)
+      )
+      
+    },
+    error = function(e) {
+      message("↪️ Falling back to default_chunked method")
+      message("  ⚠️ csv_chunked error: ", conditionMessage(e))
+      leer.default_chunked(filename, ...)
+    }
+  )
+}
+
 # tsv
 #' @export
 leer.tsv <- function(filename, ...) {
@@ -125,6 +178,49 @@ leer.tsv <- function(filename, ...) {
     error = function(e) {
       message("↪️ Falling back to default method")
       leer.default(filename, ...)
+    }
+  )
+}
+
+
+# tsv_chunked
+#' @export
+leer.tsv_chunked <- function(filename, ...) {
+  tryCatch(
+    {
+      args <- list(...)
+      
+      if (is.null(args$callback)) {
+        stop(
+          "❌ Please provide a callback function.\n",
+          "Example: callback = function(x, pos) { ... }"
+        )
+      }
+      
+      if (inherits(args$callback, "SideEffectChunkCallback")) {
+        callback <- args$callback
+      } else if (is.function(args$callback)) {
+        callback <- readr::SideEffectChunkCallback$new(args$callback)
+      } else {
+        stop("❌ callback must be a function or a SideEffectChunkCallback.")
+      }
+
+      # Remove callback from ... so it is not forwarded to the reader again
+      args$callback <- NULL
+
+      message("📄 Reading TSV file in chunks(default is 10000 rows) ...")
+      message("🔄 Processing each chunk using the callback function...")
+      message("💡 The callback receives each chunk as a data frame and its starting row position.")
+      message("📦 Each chunk is processed independently to reduce memory usage.")
+      
+      do.call(
+        readr::read_tsv_chunked,
+        c(list(file = filename, callback = callback), args)
+      )
+    },
+    error = function(e) {
+      message("↪️ Falling back to default_chunked method")
+      leer.default_chunked(filename, ...)
     }
   )
 }
@@ -232,6 +328,7 @@ leer.package <- function(filename, ...) {
     }
   )
 }
+
 # csv2
 #' @export
 leer.csv2 <- function(x, ...) {
@@ -243,6 +340,48 @@ leer.csv2 <- function(x, ...) {
     error = function(e) {
       message("↪️ Falling back to default method")
       leer.default(x, ...)
+    }
+  )
+}
+
+# csv2_chunked
+#' @export
+leer.csv2_chunked <- function(filename, ...) {
+  tryCatch(
+    {
+      args <- list(...)
+      
+      if (is.null(args$callback)) {
+        stop(
+          "❌ Please provide a callback function.\n",
+          "Example: callback = function(x, pos) { ... }"
+        )
+      }
+      
+      if (inherits(args$callback, "SideEffectChunkCallback")) {
+        callback <- args$callback
+      } else if (is.function(args$callback)) {
+        callback <- readr::SideEffectChunkCallback$new(args$callback)
+      } else {
+        stop("❌ callback must be a function or a SideEffectChunkCallback.")
+      }
+
+      # Remove callback from ... so it is not forwarded to the reader again
+      args$callback <- NULL
+
+      message("📄 Reading CSV2 file in chunks(default is 10000 rows) ...")
+      message("🔄 Processing each chunk using the callback function...")
+      message("💡 The callback receives each chunk as a data frame and its starting row position.")
+      message("📦 Each chunk is processed independently to reduce memory usage.")
+      
+      do.call(
+        readr::read_csv2_chunked,
+        c(list(file = filename, callback = callback), args)
+      )
+    },
+    error = function(e) {
+      message("↪️ Falling back to default_chunked method")
+      leer.default_chunked(filename, ...)
     }
   )
 }
@@ -353,6 +492,49 @@ leer.default <- function(x, ...) {
     },
     error = function(e) {
       message("⚠️ leer.default() unable to read the file")
+    }
+  )
+}
+
+# default_chunked
+#' @export
+leer.default_chunked <- function(filename, ...) {
+  tryCatch(
+    {
+      args <- list(...)
+      
+      if (is.null(args$callback)) {
+        stop(
+          "❌ Please provide a callback function.\n",
+          "Example: callback = function(x, pos) { ... }"
+        )
+      }
+      
+      if (inherits(args$callback, "SideEffectChunkCallback")) {
+        callback <- args$callback
+      } else if (is.function(args$callback)) {
+        callback <- readr::SideEffectChunkCallback$new(args$callback)
+      } else {
+        stop("❌ callback must be a function or a SideEffectChunkCallback.")
+      }
+
+      # Remove callback from ... so it is not forwarded to the reader again
+      args$callback <- NULL
+
+      message("📄 Reading file in chunks(default is 10000 rows) ...")
+      message("🔄 Processing each chunk using the callback function...")
+      message("💡 The callback receives each chunk as a data frame and its starting row position.")
+      message("📦 Each chunk is processed independently to reduce memory usage.")
+      
+      do.call(
+        readr::read_delim_chunked,
+        c(list(file = filename, callback = callback), args)
+      )
+    },
+    error = function(e) {
+      message("↪️ Falling back to default method")
+      message("  ⚠️ default_chunked error: ", conditionMessage(e))
+      leer.default(filename, ...)
     }
   )
 }
