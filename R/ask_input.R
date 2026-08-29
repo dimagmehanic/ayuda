@@ -8,6 +8,7 @@
 #' @export
 #'
 #' @examples
+#' a <- NULL
 #' ask_input(a, "Please enter a value: ", default = NULL)
 
 ask_input <- function(var, pprompt, default = NULL) {
