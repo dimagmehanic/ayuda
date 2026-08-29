@@ -18,72 +18,72 @@ leer <- function(x, ...) {
 #' @export
 leer.character <- function(x, ...) {
 
-    # Auto-detect path type and read data
-    ext <- tools::file_ext(tolower(trimws(x)))
-    ext_bool <- nzchar(ext)
-    ext_dbs <- c("sqlite", "zip", "tar", "db", "sqlite3", "db3", "sql")
-    isdir <- file.info(x)$isdir
-    # if NA the set FALSE
-    isdir <- ifelse(is.na(isdir), FALSE, isdir)
+  # Auto-detect path type and read data
+  ext <- tools::file_ext(tolower(trimws(x)))
+  ext_bool <- nzchar(ext)
+  ext_dbs <- c("sqlite", "zip", "tar", "db", "sqlite3", "db3", "sql")
+  isdir <- file.info(x)$isdir
+  # if NA the set FALSE
+  isdir <- ifelse(is.na(isdir), FALSE, isdir)
+  args  <- list(...)
 
+  if (!isdir && ext_bool && !(ext %in% ext_dbs)) {
+    # attach file as class to filename
+    y <- structure(x, class = "file")
+    leer(y, ...)
+  } else if (!isdir && ext_bool && ext %in% ext_dbs) {
 
-    if (!isdir && ext_bool && !(ext %in% ext_dbs)) {
-        # attach file as class to filename
-        y <- structure(x, class = "file")
-        leer(y, ...)
-    } else if (!isdir && ext_bool && ext %in% ext_dbs) {
+    # Friendly message about  object
+    message("✅ R6 object of class 'GetData' returned.\n",
+            "You can use its methods to interact with the data, for example:\n",
+            "  obj$list()   # list data\n",
+            "  obj$info()   # show info")
 
-        # Friendly message about  object
-        message("✅ R6 object of class 'GetData' returned.\n",
-                "You can use its methods to interact with the data, for example:\n",
-                "  obj$list()   # list data\n",
-                "  obj$info()   # show info")
+    invisible(GetData$new(x, db = ext))  # call GetData R6 class
 
-        invisible(GetData$new(x, db = ext))  # call GetData R6 class
+  } else if (isdir) {
 
-    } else if (isdir) {
+    # Friendly message about  object
+    message("✅ R6 object of class 'GetData' returned.\n",
+            "You can use its methods to interact with the data, for example:\n",
+            "  obj$list()   # list data\n",
+            "  obj$info()   # show info")
 
-        # Friendly message about  object
-        message("✅ R6 object of class 'GetData' returned.\n",
-                "You can use its methods to interact with the data, for example:\n",
-                "  obj$list()   # list data\n",
-                "  obj$info()   # show info")
+    invisible(GetData$new(x, db = "dir"))  # call GetData R6 class
 
-        invisible(GetData$new(x, db = "dir"))  # call GetData R6 class
-
-    } else if (is_package(x)) {
-        # attach package as class to filename
-        y <- structure(x, class = "package")
-        leer(y, ...)
-    } else {
-        tryCatch(
-            {
-                dbname <- ask_input(
-                    args$dbname,
-                    "🗄️  Database name (default: postgres): ",
-                    "postgres"
-                )
-
-                message(
-                    "✅ Connected to database '", dbname, "'.\n",
-                    "📦 Returning a 'GetData' R6 object.\n",
-                    "Use the object's methods to work with the database, for example:\n",
-                    "  • obj$list() # list data\n",
-                    "  • obj$info() # show info"
-                )
-
-                invisible(GetData$new(x, db = dbname))
-
-            },
-            error = function(e) {
-                message(
-                    "❌ Failed to connect to database '", dbname, "'.\n",
-                    "Reason: ", conditionMessage(e)
-                )
-                invisible(NULL)
-            }
+  } else if (is_package(x)) {
+    # attach package as class to filename
+    y <- structure(x, class = "package")
+    leer(y, ...)
+  } else {
+    tryCatch(
+      {
+        database <- ask_input(
+          args$database,
+          "🗄️  Database name (default: postgres): ",
+          "postgres"
         )
-    }
+
+        message(
+          "✅ Connected to database '", database, "'.\n",
+          "📦 Returning a 'GetData' R6 object.\n",
+          "Use the object's methods to work with the database, for example:\n",
+          "  • obj$list() # list data\n",
+          "  • obj$info() # show info"
+        )
+
+        invisible(GetData$new(x, db = database, ...))
+
+      },
+      error = function(e) {
+        message(
+          "❌ Failed to connect to database '", database, "'.\n",
+          "Reason: ", conditionMessage(e)
+        )
+        invisible(NULL)
+      }
+    )
+  }
 }
 
 # file
@@ -92,11 +92,19 @@ leer.file <- function(x, ...) {
 
   filename <- tolower(trimws(x))
   ext <- tools::file_ext(filename)
-
-  # attach extension as class to filename
-  y <- structure(x, class = ext)
-
-  leer(y, ...)
+  args <- list(...) 
+    
+  if (((file.info(x)$size / 1024^2) >= 500) || (!is.null(args$callback))){
+    message("📦 File is larger than 500MB or a callback is provided. Reading in chunks...")
+    # attach extension as class to filename
+    y <- structure(x, class = paste0(ext, "_chunked"))
+    leer(y, ...)
+  } else{
+    # attach extension as class to filename
+    y <- structure(x, class = ext)
+    leer(y, ...)
+  }
+  
 }
 
 # csv
@@ -110,6 +118,51 @@ leer.csv <- function(filename, ...) {
     error = function(e) {
       message("↪️ Falling back to default method")
       leer.default(filename, ...)
+    }
+  )
+}
+
+# csv_chunked
+#' @export
+leer.csv_chunked <- function(filename, ...) {
+  tryCatch(
+    {
+      args <- list(...)
+      
+      if (is.null(args$callback)) {
+        stop(
+          "❌ Please provide a callback function.\n",
+          "Example: callback = function(x, pos) { ... }"
+        )
+      }
+      
+      # Accept either a raw function or an already-wrapped SideEffectChunkCallback
+      if (inherits(args$callback, "SideEffectChunkCallback")) {
+        callback <- args$callback
+      } else if (is.function(args$callback)) {
+        callback <- readr::SideEffectChunkCallback$new(args$callback)
+      } else {
+        stop("❌ callback must be a function or a SideEffectChunkCallback.")
+      }
+
+      # Remove callback from ... so it is not forwarded to the reader again
+      args$callback <- NULL
+
+      message("📄 Reading CSV file in chunks(default is 10000 rows) ...")
+      message("🔄 Processing each chunk using the callback function...")
+      message("💡 The callback receives each chunk as a data frame and its starting row position.")
+      message("📦 Each chunk is processed independently to reduce memory usage.")
+      
+      do.call(
+        readr::read_csv_chunked,
+        c(list(file = filename, callback = callback), args)
+      )
+      
+    },
+    error = function(e) {
+      message("↪️ Falling back to default_chunked method")
+      message("  ⚠️ csv_chunked error: ", conditionMessage(e))
+      leer.default_chunked(filename, ...)
     }
   )
 }
@@ -129,19 +182,62 @@ leer.tsv <- function(filename, ...) {
   )
 }
 
+
+# tsv_chunked
+#' @export
+leer.tsv_chunked <- function(filename, ...) {
+  tryCatch(
+    {
+      args <- list(...)
+      
+      if (is.null(args$callback)) {
+        stop(
+          "❌ Please provide a callback function.\n",
+          "Example: callback = function(x, pos) { ... }"
+        )
+      }
+      
+      if (inherits(args$callback, "SideEffectChunkCallback")) {
+        callback <- args$callback
+      } else if (is.function(args$callback)) {
+        callback <- readr::SideEffectChunkCallback$new(args$callback)
+      } else {
+        stop("❌ callback must be a function or a SideEffectChunkCallback.")
+      }
+
+      # Remove callback from ... so it is not forwarded to the reader again
+      args$callback <- NULL
+
+      message("📄 Reading TSV file in chunks(default is 10000 rows) ...")
+      message("🔄 Processing each chunk using the callback function...")
+      message("💡 The callback receives each chunk as a data frame and its starting row position.")
+      message("📦 Each chunk is processed independently to reduce memory usage.")
+      
+      do.call(
+        readr::read_tsv_chunked,
+        c(list(file = filename, callback = callback), args)
+      )
+    },
+    error = function(e) {
+      message("↪️ Falling back to default_chunked method")
+      leer.default_chunked(filename, ...)
+    }
+  )
+}
+
 # rds
 #' @export
 leer.rds <- function(filename, ...) {
-    tryCatch(
-        {
-            message("📄 Reading Rds file ...")
-            readRDS(filename, ...)
-        },
-        error = function(e) {
-            message("↪️ Falling back to default method")
-            leer.default(filename, ...)
-        }
-    )
+  tryCatch(
+    {
+      message("📄 Reading Rds file ...")
+      readRDS(filename, ...)
+    },
+    error = function(e) {
+      message("↪️ Falling back to default method")
+      leer.default(filename, ...)
+    }
+  )
 }
 
 # rda
@@ -177,14 +273,14 @@ leer.rda <- function(filename, ...) {
   }
 
   tryCatch(
-  {
-    message("📄 Reading rda file ...")
-    rda_load(filename, ...)
-  },
-  error = function(e) {
-    message("↪️ Falling back to default method")
-    leer.default(filename, ...)
-  }
+    {
+      message("📄 Reading rda file ...")
+      rda_load(filename, ...)
+    },
+    error = function(e) {
+      message("↪️ Falling back to default method")
+      leer.default(filename, ...)
+    }
   )
 }
 
@@ -192,46 +288,47 @@ leer.rda <- function(filename, ...) {
 # package
 #' @export
 leer.package <- function(filename, ...) {
-    ##lazy load package datasets
-    package_load <- function(f){
-        names <- data(package = f)$results[, "Item"]
+  ##lazy load package datasets
+  package_load <- function(f){
+    names <- data(package = f)$results[, "Item"]
 
-        if (length(names) >= 1) {
-            message(
-                "📦 Lazy-loaded ", length(names), " dataset",
-                if (length(names) != 1) "s" else "",
-                " from package '", f, "'.\n",
-                "Examples: ", paste(head(names, 3), collapse = ", "),
-                if (length(names) > 3) ", ..." else "", "\n",
-                "Load a dataset with:\n",
-                "  data <- result[['dataset_name']]()"
-            )
-            df <- purrr::set_names(
-                purrr::map(names, function(nm) {
-                    function() {
-                        # load the data
-                        data(list = nm, package = f)
-                        get(nm)
-                    }
-                }),
-                names)
-        }else{
-            df <- NULL
-        }
-        return (df)
+    if (length(names) >= 1) {
+      message(
+        "📦 Lazy-loaded ", length(names), " dataset",
+        if (length(names) != 1) "s" else "",
+        " from package '", f, "'.\n",
+        "Examples: ", paste(head(names, 3), collapse = ", "),
+        if (length(names) > 3) ", ..." else "", "\n",
+        "Load a dataset with:\n",
+        "  data <- result[['dataset_name']]()"
+      )
+      df <- purrr::set_names(
+        purrr::map(names, function(nm) {
+          function() {
+            # load the data
+            data(list = nm, package = f)
+            get(nm)
+          }
+        }),
+        names)
+    }else{
+      df <- NULL
     }
+    return (df)
+  }
 
-    tryCatch(
-        {
-            message("📄 Reading package ", filename, " ...")
-            package_load(filename, ...)
-        },
-        error = function(e) {
-            message("↪️ Falling back to default method")
-            leer.default(filename, ...)
-        }
-    )
+  tryCatch(
+    {
+      message("📄 Reading package ", filename, " ...")
+      package_load(filename, ...)
+    },
+    error = function(e) {
+      message("↪️ Falling back to default method")
+      leer.default(filename, ...)
+    }
+  )
 }
+
 # csv2
 #' @export
 leer.csv2 <- function(x, ...) {
@@ -243,6 +340,48 @@ leer.csv2 <- function(x, ...) {
     error = function(e) {
       message("↪️ Falling back to default method")
       leer.default(x, ...)
+    }
+  )
+}
+
+# csv2_chunked
+#' @export
+leer.csv2_chunked <- function(filename, ...) {
+  tryCatch(
+    {
+      args <- list(...)
+      
+      if (is.null(args$callback)) {
+        stop(
+          "❌ Please provide a callback function.\n",
+          "Example: callback = function(x, pos) { ... }"
+        )
+      }
+      
+      if (inherits(args$callback, "SideEffectChunkCallback")) {
+        callback <- args$callback
+      } else if (is.function(args$callback)) {
+        callback <- readr::SideEffectChunkCallback$new(args$callback)
+      } else {
+        stop("❌ callback must be a function or a SideEffectChunkCallback.")
+      }
+
+      # Remove callback from ... so it is not forwarded to the reader again
+      args$callback <- NULL
+
+      message("📄 Reading CSV2 file in chunks(default is 10000 rows) ...")
+      message("🔄 Processing each chunk using the callback function...")
+      message("💡 The callback receives each chunk as a data frame and its starting row position.")
+      message("📦 Each chunk is processed independently to reduce memory usage.")
+      
+      do.call(
+        readr::read_csv2_chunked,
+        c(list(file = filename, callback = callback), args)
+      )
+    },
+    error = function(e) {
+      message("↪️ Falling back to default_chunked method")
+      leer.default_chunked(filename, ...)
     }
   )
 }
@@ -353,6 +492,49 @@ leer.default <- function(x, ...) {
     },
     error = function(e) {
       message("⚠️ leer.default() unable to read the file")
+    }
+  )
+}
+
+# default_chunked
+#' @export
+leer.default_chunked <- function(filename, ...) {
+  tryCatch(
+    {
+      args <- list(...)
+      
+      if (is.null(args$callback)) {
+        stop(
+          "❌ Please provide a callback function.\n",
+          "Example: callback = function(x, pos) { ... }"
+        )
+      }
+      
+      if (inherits(args$callback, "SideEffectChunkCallback")) {
+        callback <- args$callback
+      } else if (is.function(args$callback)) {
+        callback <- readr::SideEffectChunkCallback$new(args$callback)
+      } else {
+        stop("❌ callback must be a function or a SideEffectChunkCallback.")
+      }
+
+      # Remove callback from ... so it is not forwarded to the reader again
+      args$callback <- NULL
+
+      message("📄 Reading file in chunks(default is 10000 rows) ...")
+      message("🔄 Processing each chunk using the callback function...")
+      message("💡 The callback receives each chunk as a data frame and its starting row position.")
+      message("📦 Each chunk is processed independently to reduce memory usage.")
+      
+      do.call(
+        readr::read_delim_chunked,
+        c(list(file = filename, callback = callback), args)
+      )
+    },
+    error = function(e) {
+      message("↪️ Falling back to default method")
+      message("  ⚠️ default_chunked error: ", conditionMessage(e))
+      leer.default(filename, ...)
     }
   )
 }

@@ -50,4 +50,5 @@ rsconnect/
 .Rproj.user
 .DS_Store
 .quarto
-.vscode
+.vscodedev.Rmd
+dev.Rmd

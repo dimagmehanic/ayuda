@@ -26,14 +26,14 @@ GetData <- R6::R6Class("GetData", # nolint
     #' @param ... Additional arguments passed to internal methods
     initialize = function(x, db = NULL, ...) {
 
-        args  <- list(db = db, ...)
+      args  <- list(db = db, ...)
 
       if (is.null(args$db)) {
         args$db <- self$guess_ext(x)
       }
 
       if (is.na(file.info(x)$isdir) &&
-            !(args$db %in% c("sqlite", "db", "sqlite3", "db3"))) {
+            !(args$db %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "postgres"))) {
         stop("❌ Path does not exist: ", x)
       } else if (is.na(file.info(x)$isdir) &&
                    (args$db %in% c("sqlite", "db", "sqlite3", "db3"))) {
@@ -59,8 +59,8 @@ GetData <- R6::R6Class("GetData", # nolint
         self$datos <- args$db
         private$pointer <- private$connect_mysql(dbname = x, ...)
       } else if (args$db == "postgres") {
-          self$datos <- args$db
-          private$pointer <- private$connect_postgres(dbname = x, ...)
+        self$datos <- args$db
+        private$pointer <- private$connect_postgres(dbname = x, ...)
       } else {
         stop("❌ Unsupported database.")
       }
@@ -115,6 +115,49 @@ GetData <- R6::R6Class("GetData", # nolint
 
     },
 
+    #' @description Write a large local file to the DB in chunks
+    #' @param file_path path to the local data file to insert 
+    #' @param db_args named list of arguments passed to the DB writer
+    #'        (e.g. overwrite) for each chunk
+    #' @param readr_args named list of arguments passed to the chunked reader
+    #'        (e.g. col_types, delimiter, chunk_size)
+    #' @return TRUE invisibly on success
+    write_chunked = function(file_path, db_args = list(), readr_args = list()) {
+
+      table_name <- tools::file_path_sans_ext(basename(file_path))
+
+      if (is.null(private$pointer)) stop("No connection established")
+
+      if (!(self$datos %in% c("sqlite", "db", "sqlite3", "db3", "mysql", "sql", "postgres"))) { # nolint
+        stop("❌ Chunked writing is only supported for database sources.")
+      }
+
+      message("📄 Reading '", file_path, "' in chunks (default 10000 rows) ...")
+
+      first_chunk <- TRUE
+
+      # Raw callback inserts each chunk into the DB. The first chunk creates the
+      # table (overwrite=TRUE), subsequent chunks append. db_args is passed only
+      # to the DB writer and read_args only to the reader, so the two never
+      # overlap.
+      cb <- function(x, pos) {
+        if (first_chunk) {
+          do.call(self$write, c(list(x, table_name), db_args))
+          first_chunk <<- FALSE
+        }else {
+          do.call(DBI::dbAppendTable,
+                  c(list(private$pointer, name = table_name, value = x), db_args))
+        }
+      }
+
+      # Reuse leer's existing chunked S3 methods (csv_chunked, tsv_chunked, ...).
+      # leer() dispatches on the file's extension.
+      do.call(leer, c(list(file_path, callback = cb), readr_args))
+
+      message("✅ Finished writing '", table_name, "'.")
+      invisible(TRUE)
+    },
+
     #' @description Guess file extension
     #' @param x path or file
     #' @return character string
@@ -167,6 +210,17 @@ GetData <- R6::R6Class("GetData", # nolint
         return(NULL) # nolint
       }
     },
+    
+    #' @description Connection pointer
+    #' @return path or established connection
+    #'
+    #' Returns the internal connection pointer stored in \code{private$pointer}.
+    #' For database sources this is the active DB connection (e.g. MySQL), and
+    #' for file-based sources it is the path to the data. It is a read-only
+    #' accessor and does not open or close any connection itself.
+    con = function(){
+      return(private$pointer)
+    },
 
     #' @return The GetData object itself (invisibly), allowing for method chaining # nolint
     #' @export
@@ -194,18 +248,19 @@ GetData <- R6::R6Class("GetData", # nolint
     # MySQL connection
     connect_mysql = function(...) {
 
-      args <- list(...)
+      args <- list()
+      arggs <- list(...)
 
-      args$dbname <- ask_input(args$dbname,
+      args$dbname <- ask_input(arggs$dbname,
                                "🗄️ Database name (default: test): ",
                                "test")
-      args$host <- ask_input(args$host,
+      args$host <- ask_input(arggs$host,
                              "🌐 Host (e.g., localhost): ",
                              "127.0.0.1")
-      args$port <- ask_input(args$port,
+      args$port <- ask_input(arggs$port,
                              "🔌 Port (e.g., 3306): ",
                              "3306")
-      args$user <- ask_input(args$user,
+      args$user <- ask_input(arggs$user,
                              paste0("👤 User (default: ", whoami(), "): "),
                              whoami())
 
@@ -227,33 +282,34 @@ GetData <- R6::R6Class("GetData", # nolint
     # Postgres connection
     connect_postgres = function(...) {
 
-        args <- list(...)
+      args <- list()
+      arggs <- list(...)
 
-        args$dbname <- ask_input(args$dbname,
-                                 "🗄️ Database name (default: test): ",
-                                 "test")
-        args$host <- ask_input(args$host,
-                               "🌐 Host (e.g., localhost): ",
-                               "127.0.0.1")
-        args$port <- ask_input(args$port,
-                               "🔌 Port (e.g., 5432): ",
-                               "5432")
-        args$user <- ask_input(args$user,
-                               paste0("👤 User (default: ", whoami(), "): "),
-                               whoami())
+      args$dbname <- ask_input(arggs$dbname,
+                               "🗄️ Database name (default: test): ",
+                               "test")
+      args$host <- ask_input(arggs$host,
+                             "🌐 Host (e.g., localhost): ",
+                             "127.0.0.1")
+      args$port <- ask_input(arggs$port,
+                             "🔌 Port (e.g., 5432): ",
+                             "5432")
+      args$user <- ask_input(arggs$user,
+                             paste0("👤 User (default: ", whoami(), "): "),
+                             whoami())
 
-        ### Connection Check
-        tryCatch(
-            {
-                message("🔄 Attempting PostgreSQL database connection...")
-                con <- do.call(DBI::dbConnect, c(list(RPostgres::Postgres()), args, list(password = passwd()))) # nolint
-                message("✅ Connection successful")
-                return(con)
-            },
-            error = function(e) {
-                message("❌ Connection failed: ", e$message)
-            }
-        )
+      ### Connection Check
+      tryCatch(
+        {
+          message("🔄 Attempting PostgreSQL database connection...")
+          con <- do.call(DBI::dbConnect, c(list(RPostgres::Postgres()), args, list(password = passwd()))) # nolint
+          message("✅ Connection successful")
+          return(con)
+        },
+        error = function(e) {
+          message("❌ Connection failed: ", e$message)
+        }
+      )
     },
 
     # SQLite connection
@@ -287,11 +343,11 @@ GetData <- R6::R6Class("GetData", # nolint
 
           for (stmt in statements) {
 
-              stmt <- trimws(stmt)
+            stmt <- trimws(stmt)
 
-              if (nzchar(stmt)) {
-                  DBI::dbExecute(con, stmt)
-              }
+            if (nzchar(stmt)) {
+              DBI::dbExecute(con, stmt)
+            }
           }
 
           message("✅ Connection successful")
