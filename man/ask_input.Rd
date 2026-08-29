@@ -20,5 +20,6 @@ user input or default value
 Ask for user input if variable is NULL
 }
 \examples{
+a <- NULL
 ask_input(a, "Please enter a value: ", default = NULL)
 }

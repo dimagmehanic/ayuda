@@ -17,225 +17,212 @@ Load data from files, directories, archives, or databases.
 # db$disconnect()
 }
 \section{Public fields}{
-  \if{html}{\out{<div class="r6-fields">}}
-  \describe{
-    \item{\code{datos}}{type of data source (character: "sqlite", "mysql", "zip", etc.)}
-  }
-  \if{html}{\out{</div>}}
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{datos}}{type of data source (character: "sqlite", "mysql", "zip", etc.)}
+}
+\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-GetData-initialize}{\code{GetData$new()}}
-    \item \href{#method-GetData-leer}{\code{GetData$leer()}}
-    \item \href{#method-GetData-write}{\code{GetData$write()}}
-    \item \href{#method-GetData-write_chunked}{\code{GetData$write_chunked()}}
-    \item \href{#method-GetData-guess_ext}{\code{GetData$guess_ext()}}
-    \item \href{#method-GetData-disconnect}{\code{GetData$disconnect()}}
-    \item \href{#method-GetData-list}{\code{GetData$list()}}
-    \item \href{#method-GetData-con}{\code{GetData$con()}}
-    \item \href{#method-GetData-info}{\code{GetData$info()}}
-    \item \href{#method-GetData-clone}{\code{GetData$clone()}}
-  }
+\itemize{
+\item \href{#method-GetData-new}{\code{GetData$new()}}
+\item \href{#method-GetData-leer}{\code{GetData$leer()}}
+\item \href{#method-GetData-write}{\code{GetData$write()}}
+\item \href{#method-GetData-write_chunked}{\code{GetData$write_chunked()}}
+\item \href{#method-GetData-guess_ext}{\code{GetData$guess_ext()}}
+\item \href{#method-GetData-disconnect}{\code{GetData$disconnect()}}
+\item \href{#method-GetData-list}{\code{GetData$list()}}
+\item \href{#method-GetData-con}{\code{GetData$con()}}
+\item \href{#method-GetData-info}{\code{GetData$info()}}
+\item \href{#method-GetData-clone}{\code{GetData$clone()}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-GetData-initialize"></a>}}
-\if{latex}{\out{\hypertarget{method-GetData-initialize}{}}}
-\subsection{\code{GetData$new()}}{
-  Initialize a new GetData object
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$new(x, db = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{x}}{Path to file, directory, archive, or a DBIConnection object}
-      \item{\code{db}}{database}
-      \item{\code{...}}{Additional arguments passed to internal methods}
-    }
-    \if{html}{\out{</div>}}
-  }
+\if{html}{\out{<a id="method-GetData-new"></a>}}
+\if{latex}{\out{\hypertarget{method-GetData-new}{}}}
+\subsection{Method \code{new()}}{
+Initialize a new GetData object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$new(x, db = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{Path to file, directory, archive, or a DBIConnection object}
+
+\item{\code{db}}{database}
+
+\item{\code{...}}{Additional arguments passed to internal methods}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-leer"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-leer}{}}}
-\subsection{\code{GetData$leer()}}{
-  Read data
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$leer(table_name, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{table_name}}{for databases or filename}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    tibble/data.frame/lazy table
-  }
+\subsection{Method \code{leer()}}{
+Read data
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$leer(table_name, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{table_name}}{for databases or filename}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+tibble/data.frame/lazy table
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-write"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-write}{}}}
-\subsection{\code{GetData$write()}}{
-  Write data
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$write(df, table_name, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{df}}{dataframe or tibble}
-      \item{\code{table_name}}{name}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{write()}}{
+Write data
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$write(df, table_name, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{df}}{dataframe or tibble}
+
+\item{\code{table_name}}{name}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-write_chunked"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-write_chunked}{}}}
-\subsection{\code{GetData$write_chunked()}}{
-  Write a large local file to the DB in chunks
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$write_chunked(file_path, db_args = list(), readr_args = list())}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{file_path}}{path to the local data file to insert}
-      \item{\code{db_args}}{named list of arguments passed to the DB writer
-(e.g. overwrite) for each chunk}
-      \item{\code{readr_args}}{named list of arguments passed to the chunked reader
-(e.g. col_types, delimiter, chunk_size)}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    TRUE invisibly on success
-  }
+\subsection{Method \code{write_chunked()}}{
+Write a large local file to the DB in chunks
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$write_chunked(file_path, db_args = list(), readr_args = list())}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{file_path}}{path to the local data file to insert}
+
+\item{\code{db_args}}{named list of arguments passed to the DB writer
+(e.g. overwrite) for each chunk}
+
+\item{\code{readr_args}}{named list of arguments passed to the chunked reader
+(e.g. col_types, delimiter, chunk_size)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+TRUE invisibly on success
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-guess_ext"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-guess_ext}{}}}
-\subsection{\code{GetData$guess_ext()}}{
-  Guess file extension
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$guess_ext(x)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{x}}{path or file}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    character string
-  }
+\subsection{Method \code{guess_ext()}}{
+Guess file extension
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$guess_ext(x)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{path or file}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+character string
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-disconnect"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-disconnect}{}}}
-\subsection{\code{GetData$disconnect()}}{
-  Disconnect from DB if needed
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$disconnect()}
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{disconnect()}}{
+Disconnect from DB if needed
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$disconnect()}\if{html}{\out{</div>}}
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-list"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-list}{}}}
-\subsection{\code{GetData$list()}}{
-  List tables or files
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$list(...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    character vector
-  }
+\subsection{Method \code{list()}}{
+List tables or files
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$list(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+character vector
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-con"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-con}{}}}
-\subsection{\code{GetData$con()}}{
-  Connection pointer
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$con()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    path or established connection
+\subsection{Method \code{con()}}{
+Connection pointer
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$con()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+path or established connection
 
 Returns the internal connection pointer stored in \code{private$pointer}.
 For database sources this is the active DB connection (e.g. MySQL), and
 for file-based sources it is the path to the data. It is a read-only
 accessor and does not open or close any connection itself.
-  }
 }
-
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-info"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-info}{}}}
-\subsection{\code{GetData$info()}}{
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$info()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    The GetData object itself (invisibly), allowing for method chaining # nolint
-  }
+\subsection{Method \code{info()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$info()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+The GetData object itself (invisibly), allowing for method chaining # nolint
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetData-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-GetData-clone}{}}}
-\subsection{\code{GetData$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetData$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetData$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

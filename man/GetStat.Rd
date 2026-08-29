@@ -15,267 +15,252 @@ s$obs()
 
 }
 \section{Public fields}{
-  \if{html}{\out{<div class="r6-fields">}}
-  \describe{
-    \item{\code{x}}{Input vector.}
-  }
-  \if{html}{\out{</div>}}
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{x}}{Input vector.}
+}
+\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-GetStat-initialize}{\code{GetStat$new()}}
-    \item \href{#method-GetStat-obs}{\code{GetStat$obs()}}
-    \item \href{#method-GetStat-range}{\code{GetStat$range()}}
-    \item \href{#method-GetStat-central}{\code{GetStat$central()}}
-    \item \href{#method-GetStat-var_sd}{\code{GetStat$var_sd()}}
-    \item \href{#method-GetStat-iqr}{\code{GetStat$iqr()}}
-    \item \href{#method-GetStat-skewness}{\code{GetStat$skewness()}}
-    \item \href{#method-GetStat-kurtosis}{\code{GetStat$kurtosis()}}
-    \item \href{#method-GetStat-cv}{\code{GetStat$cv()}}
-    \item \href{#method-GetStat-zscore}{\code{GetStat$zscore()}}
-    \item \href{#method-GetStat-list}{\code{GetStat$list()}}
-    \item \href{#method-GetStat-clone}{\code{GetStat$clone()}}
-  }
+\itemize{
+\item \href{#method-GetStat-new}{\code{GetStat$new()}}
+\item \href{#method-GetStat-obs}{\code{GetStat$obs()}}
+\item \href{#method-GetStat-range}{\code{GetStat$range()}}
+\item \href{#method-GetStat-central}{\code{GetStat$central()}}
+\item \href{#method-GetStat-var_sd}{\code{GetStat$var_sd()}}
+\item \href{#method-GetStat-iqr}{\code{GetStat$iqr()}}
+\item \href{#method-GetStat-skewness}{\code{GetStat$skewness()}}
+\item \href{#method-GetStat-kurtosis}{\code{GetStat$kurtosis()}}
+\item \href{#method-GetStat-cv}{\code{GetStat$cv()}}
+\item \href{#method-GetStat-zscore}{\code{GetStat$zscore()}}
+\item \href{#method-GetStat-list}{\code{GetStat$list()}}
+\item \href{#method-GetStat-clone}{\code{GetStat$clone()}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-GetStat-initialize"></a>}}
-\if{latex}{\out{\hypertarget{method-GetStat-initialize}{}}}
-\subsection{\code{GetStat$new()}}{
-  Initialize a new GetStat object
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$new(x)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{x}}{A vector.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\if{html}{\out{<a id="method-GetStat-new"></a>}}
+\if{latex}{\out{\hypertarget{method-GetStat-new}{}}}
+\subsection{Method \code{new()}}{
+Initialize a new GetStat object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$new(x)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{A vector.}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-obs"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-obs}{}}}
-\subsection{\code{GetStat$obs()}}{
-  Observation and missing value statistics
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$obs(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{obs()}}{
+Observation and missing value statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$obs(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-range"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-range}{}}}
-\subsection{\code{GetStat$range()}}{
-  Range statistics
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$range(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{range()}}{
+Range statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$range(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-central"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-central}{}}}
-\subsection{\code{GetStat$central()}}{
-  Central tendency statistics
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$central(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{central()}}{
+Central tendency statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$central(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-var_sd"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-var_sd}{}}}
-\subsection{\code{GetStat$var_sd()}}{
-  Variance and standard deviation statistics
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$var_sd(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{var_sd()}}{
+Variance and standard deviation statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$var_sd(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-iqr"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-iqr}{}}}
-\subsection{\code{GetStat$iqr()}}{
-  IQR and outlier fence statistics
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$iqr(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{iqr()}}{
+IQR and outlier fence statistics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$iqr(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-skewness"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-skewness}{}}}
-\subsection{\code{GetStat$skewness()}}{
-  Skewness statistic
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$skewness(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{skewness()}}{
+Skewness statistic
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$skewness(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-kurtosis"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-kurtosis}{}}}
-\subsection{\code{GetStat$kurtosis()}}{
-  Kurtosis statistic
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$kurtosis(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{kurtosis()}}{
+Kurtosis statistic
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$kurtosis(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-cv"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-cv}{}}}
-\subsection{\code{GetStat$cv()}}{
-  Coefficient of variation statistic
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$cv(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{cv()}}{
+Coefficient of variation statistic
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$cv(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-zscore"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-zscore}{}}}
-\subsection{\code{GetStat$zscore()}}{
-  Z-score statistic
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$zscore(col = NULL, ...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{col}}{column names}
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{zscore()}}{
+Z-score statistic
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$zscore(col = NULL, ...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col}}{column names}
+
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-list"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-list}{}}}
-\subsection{\code{GetStat$list()}}{
-  List tables or files
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$list(...)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{...}}{Additional arguments passed to read functions}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    character vector
-  }
+\subsection{Method \code{list()}}{
+List tables or files
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$list(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Additional arguments passed to read functions}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+character vector
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GetStat-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-GetStat-clone}{}}}
-\subsection{\code{GetStat$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GetStat$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GetStat$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }
