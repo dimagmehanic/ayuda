@@ -145,6 +145,7 @@ GetData <- R6::R6Class("GetData", # nolint
           do.call(self$write, c(list(x, table_name), db_args))
           first_chunk <<- FALSE
         }else {
+          message("APPENDING")
           do.call(DBI::dbAppendTable,
                   c(list(private$pointer, name = table_name, value = x), db_args))
         }
