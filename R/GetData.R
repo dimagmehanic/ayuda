@@ -141,16 +141,22 @@ GetData <- R6::R6Class("GetData", # nolint
       # to the DB writer and read_args only to the reader, so the two never
       # overlap.
       cb <- function(x, pos) {
+        message("CALLBACK START: pos=", pos, " rows=", nrow(x))
         if (first_chunk) {
-          do.call(self$write, c(list(x, table_name), db_args))
+          message("WRITING: pos=", pos, " rows=", nrow(x))
+          do.call(self$write, c(list(x, table_name), db_args)) 
+          
           first_chunk <<- FALSE
+           
         }else {
           message("APPENDING")
           do.call(DBI::dbAppendTable,
                   c(list(private$pointer, name = table_name, value = x), db_args))
         }
+        
+        message("CALLBACK END")
       }
-
+      
       # Reuse leer's existing chunked S3 methods (csv_chunked, tsv_chunked, ...).
       # leer() dispatches on the file's extension.
       do.call(leer, c(list(file_path, callback = cb), readr_args))
